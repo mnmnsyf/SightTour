@@ -30,14 +30,16 @@ public:
 	void UpdateDigitalProjectileValue(const float UpdateValue);
 		
 protected:
-	//数字子弹合计大小
+	//数字子弹总伤害
 	float DigitalProjectileValue = 1.0f;
+
+	bool HasBullet = false;
 
 	//持有的枪械
 	UPROPERTY()
 	TArray<UTP_WeaponComponent*> EquippedWeapons;
 
-	//持有的枪械
+	//现在手持的枪械
 	UPROPERTY()
 	UTP_WeaponComponent* CurrentEquippedWeapon = nullptr;
 };

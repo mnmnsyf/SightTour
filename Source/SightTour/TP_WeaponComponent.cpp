@@ -23,24 +23,32 @@ UTP_WeaponComponent::UTP_WeaponComponent()
 
 void UTP_WeaponComponent::Fire()
 {
-	if (AttactActor == nullptr || OwnerCharacter == nullptr || OwnerCharacter->GetController() == nullptr)
+	if (OwnerCharacter == nullptr || OwnerCharacter->GetController() == nullptr)
 	{
 		return;
 	}
 
 	// Try and fire a projectile
-	if (UWorld* const World = GetWorld())
+	if (AttactActor)
 	{
-		APlayerController* PlayerController = Cast<APlayerController>(OwnerCharacter->GetController());
-		const FRotator SpawnRotation = PlayerController->PlayerCameraManager->GetCameraRotation();
-		const FVector SpawnLocation = AttactActor->GetActorLocation();
-
-		if (IAttractInterface* AttractInterface = Cast<IAttractInterface>(AttactActor))
+		if (UWorld* const World = GetWorld())
 		{
-			AttractInterface->Spawn(this);
-			AttactActor = nullptr;
+			APlayerController* PlayerController = Cast<APlayerController>(OwnerCharacter->GetController());
+			const FRotator SpawnRotation = PlayerController->PlayerCameraManager->GetCameraRotation();
+			const FVector SpawnLocation = AttactActor->GetActorLocation();
+
+			if (IAttractInterface* AttractInterface = Cast<IAttractInterface>(AttactActor))
+			{
+				AttractInterface->Spawn(this);
+				AttactActor = nullptr;
+			}
 		}
 	}
+	////打出子弹总伤害
+	//else if (UEquipmentManagerComponent* EquipmentManager = OwnerCharacter->GetEquipmentManagerComponent())
+	//{
+	//	
+	//}
 
 	// Try and play the sound if specified
 	if (FireSound != nullptr)
