@@ -29,7 +29,7 @@ public:
 
 	void UpdateDigitalProjectileValue(const float UpdateValue);
 		
-protected:
+public:
 	//数字子弹总伤害
 	float DigitalProjectileValue = 1.0f;
 

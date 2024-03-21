@@ -74,6 +74,7 @@ public:
 
 
 public:
+	/** 武器十字准星纹理 */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon | Crosshairs", meta = (AllowPrivateAccess = "true"))
 	UTexture2D* CrosshairMiddle;
 

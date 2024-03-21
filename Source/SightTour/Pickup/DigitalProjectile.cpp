@@ -91,31 +91,25 @@ void ADigitalProjectile::Spawn(class UTP_WeaponComponent* WeaponComp)
 
 void ADigitalProjectile::OnEquipped()
 {
-	if (OwnerWeapon == nullptr || OwnerWeapon->GetOwner())
+	if (OwnerWeapon == nullptr || !OwnerWeapon->GetOwner() || BallConfig.IsNull())
 	{
-		const FString ErrorStr = FString::Printf(TEXT("There is an error in OwnerWeapon!"));
-		UE_LOG(LogTemp, Error, TEXT("%s:%d %s"), *FString(__FUNCTION__), __LINE__, *ErrorStr);
 		return;
 	}
-	UEquipmentManagerComponent* EquipmentManagerComponent = OwnerWeapon->GetOwner()->FindComponentByClass<UEquipmentManagerComponent>();
-	if (EquipmentManagerComponent == nullptr)
+	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+	if (ASightTourCharacter* SightTourCharacter = Cast<ASightTourCharacter>(Player))
 	{
-		const FString ErrorStr = FString::Printf(TEXT("Unable to find EquipmentManagerComponent from Owner!"));
-		UE_LOG(LogTemp, Error, TEXT("%s:%d %s"), *FString(__FUNCTION__), __LINE__, *ErrorStr);
-		return;
+		FDigitalProjectileConfig* DigitalProjectileConfig = BallConfig.GetRow<FDigitalProjectileConfig>(TEXT("Get Digital Projectile Config"));
+		if (DigitalProjectileConfig == nullptr)
+		{
+			FMessageDialog::Open(EAppMsgType::Ok, FText::FromString(TEXT("未找到对应的子弹配置，请优先修改！")));
+		}
+
+		UEquipmentManagerComponent* EquipmentManagerComponent = SightTourCharacter->FindComponentByClass<UEquipmentManagerComponent>();
+		if (EquipmentManagerComponent)
+		{
+			EquipmentManagerComponent->UpdateDigitalProjectileValue(DigitalProjectileConfig->BallNumber);
+		}
 	}
-	if (BallConfig.IsNull())
-	{
-		FMessageDialog::Open(EAppMsgType::Ok, FText::FromString(TEXT("数字子弹配置表异常！")));
-		return;
-	}
-	FDigitalProjectileConfig* DigitalProjectileConfig = BallConfig.GetRow<FDigitalProjectileConfig>(TEXT("Get Digital Projectile Config"));
-	if (DigitalProjectileConfig == nullptr)
-	{
-		FMessageDialog::Open(EAppMsgType::Ok, FText::FromString(TEXT("未找到对应的子弹配置，请优先修改！")));
-	}
-	
-	EquipmentManagerComponent->UpdateDigitalProjectileValue(DigitalProjectileConfig->BallNumber);
 }
 
 bool ADigitalProjectile::GeSpawnDirection(FVector& OutHitLocation)
