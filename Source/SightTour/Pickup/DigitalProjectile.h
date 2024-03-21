@@ -5,7 +5,8 @@
 #include "CoreMinimal.h"
 #include "Pickup/PickupItemBase.h"
 #include "Interface/AttractInterface.h"
-#include "Projectile.generated.h"
+#include "Engine/DataTable.h"
+#include "DigitalProjectile.generated.h"
 
 class UTP_WeaponComponent;
 class UStaticMeshComponent;
@@ -13,15 +14,15 @@ class UProjectileMovementComponent;
 class USphereComponent;
 
 /**
- * 
+ * 数字子弹
  */
 UCLASS()
-class SIGHTTOUR_API AProjectile : public APickupItemBase, public IAttractInterface
+class SIGHTTOUR_API ADigitalProjectile : public APickupItemBase, public IAttractInterface
 {
 	GENERATED_BODY()
 	
 public:
-	AProjectile();
+	ADigitalProjectile();
 
 	void Tick(float DeltaTime) override;
 
@@ -33,6 +34,8 @@ public:
 
 	void Spawn(class UTP_WeaponComponent* WeaponComp) override;
 
+	void OnEquipped() override;
+
 	//获取枪口发射命中位置
 	bool GeSpawnDirection(FVector& OutHitDirection);
 
@@ -41,8 +44,6 @@ public:
 
 protected:
 	void PerMove();
-
-	void StopAndAttach();
 
 protected:
 	UPROPERTY(VisibleDefaultsOnly)
@@ -57,13 +58,16 @@ protected:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = Projectile, meta = (DisplayName = "发射力度"))
 	float ForceValue = 50.f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (DisplayName = "小球配置", RowType = "/Script/SightTour.DigitalProjectileConfig"))
+	FDataTableRowHandle BallConfig;
+
 private:
 	UPROPERTY()
 	UTP_WeaponComponent* OwnerWeapon = nullptr;
 
-	FTimerHandle AttractTimer;
-
 	bool bOpenPhysicSimulate = false;
 
 	bool bMoving = false;
+
+	friend class UTP_WeaponComponent;
 };

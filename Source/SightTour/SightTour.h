@@ -4,4 +4,4 @@
 
 #include "CoreMinimal.h"
 
-#define TRACE_PICKUP ECC_GameTraceChannel2
+#define TRACE_PICKUP UEngineTypes::ConvertToObjectType(ECC_GameTraceChannel2)	//可拾取的Object通道类型

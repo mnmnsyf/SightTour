@@ -25,4 +25,8 @@ public:
 	virtual void Attract(class UTP_WeaponComponent* WeaponComp) = 0;
 
 	virtual void Spawn(class UTP_WeaponComponent* WeaponComp) = 0;
+
+	virtual void OnEquipped() {};
+
+	virtual void UnEquipped() {};
 };
