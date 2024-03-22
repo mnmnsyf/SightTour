@@ -42,12 +42,18 @@ public:
 	//获取视口发射命中位置
 	bool TraceUnderCrosshair(FVector& OutHitLocation);
 
+	UFUNCTION()
+	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+
 protected:
 	void PerMove();
 
 protected:
 	UPROPERTY(VisibleDefaultsOnly)
 	UStaticMeshComponent* ProjectileMesh = nullptr;
+
+	UPROPERTY(VisibleDefaultsOnly)
+	USphereComponent* CollisionSphere = nullptr;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = Projectile,  meta = (DisplayName = "吸取速度"))
 	float AttractSpeed = 10.f;

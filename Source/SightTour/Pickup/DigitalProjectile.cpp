@@ -16,6 +16,19 @@ ADigitalProjectile::ADigitalProjectile()
 {
 	ProjectileMesh = CreateDefaultSubobject<UStaticMeshComponent>("ProjectileMesh");
 	ProjectileMesh->SetupAttachment(RootComponent);
+
+	// Use a sphere as a simple collision representation
+	CollisionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComp"));
+	CollisionSphere->InitSphereRadius(5.0f);
+	CollisionSphere->BodyInstance.SetCollisionProfileName("Projectile");
+	CollisionSphere->OnComponentHit.AddDynamic(this, &ADigitalProjectile::OnHit);		// set up a notification for when this component hits something blocking
+
+	// Players can't walk on it
+	CollisionSphere->SetWalkableSlopeOverride(FWalkableSlopeOverride(WalkableSlope_Unwalkable, 0.f));
+	CollisionSphere->CanCharacterStepUpOn = ECB_No;
+
+	// Die after 3 seconds by default
+	InitialLifeSpan = 3.0f;
 }
 
 void ADigitalProjectile::Tick(float DeltaTime)
@@ -172,6 +185,19 @@ bool ADigitalProjectile::TraceUnderCrosshair(FVector& OutHitLocation)
 	}
 
 	return false;
+}
+
+void ADigitalProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+	// Only add impulse and destroy projectile if we hit a physics
+	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && OtherComp->IsSimulatingPhysics())
+	{
+		OtherComp->AddImpulseAtLocation(GetVelocity() * 100.0f, GetActorLocation());
+
+		GEngine->AddOnScreenDebugMessage(-1, 1500.0f, FColor::Red, TEXT("Projectile hit"));
+
+		Destroy();
+	}
 }
 
 void ADigitalProjectile::PerMove()

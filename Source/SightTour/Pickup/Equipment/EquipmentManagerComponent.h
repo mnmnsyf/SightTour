@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "../DigitalProjectile.h"
 #include "EquipmentManagerComponent.generated.h"
 
 class UTP_WeaponComponent;
@@ -25,15 +26,26 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
+	FORCEINLINE UTP_WeaponComponent* GetCurrentEquippedWeapon() const { return CurrentEquippedWeapon; }
+
+	FORCEINLINE TSubclassOf<ADigitalProjectile> GetProjectileClass() const { return HasBullet ? ProjectileClass : nullptr; }
+
 	FORCEINLINE float GetDigitalProjectileValue() const { return DigitalProjectileValue; }
 
 	void UpdateDigitalProjectileValue(const float UpdateValue);
+
+	void EquipWeapon(UTP_WeaponComponent* InEquippedWeapon);
 		
-public:
+protected:
 	//数字子弹总伤害
 	float DigitalProjectileValue = 1.0f;
 
+	//是否有子弹
 	bool HasBullet = false;
+
+	//打出的子弹
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon | Projectile")
+	TSubclassOf<ADigitalProjectile> ProjectileClass;
 
 	//持有的枪械
 	UPROPERTY()
@@ -42,4 +54,5 @@ public:
 	//现在手持的枪械
 	UPROPERTY()
 	UTP_WeaponComponent* CurrentEquippedWeapon = nullptr;
+
 };

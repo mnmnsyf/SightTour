@@ -12,6 +12,7 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "SightTour.h"
 #include "Interface/AttractInterface.h"
+#include "Pickup/Equipment/EquipmentManagerComponent.h"
 
 // Sets default values for this component's properties
 UTP_WeaponComponent::UTP_WeaponComponent()
@@ -28,42 +29,61 @@ void UTP_WeaponComponent::Fire()
 		return;
 	}
 
-	// Try and fire a projectile
-	if (AttactActor)
-	{
-		if (UWorld* const World = GetWorld())
-		{
-			APlayerController* PlayerController = Cast<APlayerController>(OwnerCharacter->GetController());
-			const FRotator SpawnRotation = PlayerController->PlayerCameraManager->GetCameraRotation();
-			const FVector SpawnLocation = AttactActor->GetActorLocation();
+	bool bFiring = false;
 
-			if (IAttractInterface* AttractInterface = Cast<IAttractInterface>(AttactActor))
+	// 打出小球
+	if (AttactActor != nullptr)
+	{
+		APlayerController* PlayerController = Cast<APlayerController>(OwnerCharacter->GetController());
+		const FRotator SpawnRotation = PlayerController->PlayerCameraManager->GetCameraRotation();
+		const FVector SpawnLocation = AttactActor->GetActorLocation();
+
+		if (IAttractInterface* AttractInterface = Cast<IAttractInterface>(AttactActor))
+		{
+			AttractInterface->Spawn(this);
+			AttactActor = nullptr;
+			bFiring = true;
+		}
+	}
+	//打出子弹总伤害
+	else if (UEquipmentManagerComponent* EquipmentManager = OwnerCharacter->GetEquipmentManagerComponent())
+	{
+		TSubclassOf<ADigitalProjectile> ProjectileClass = EquipmentManager->GetProjectileClass();
+		UWorld* const World = GetWorld();
+		if (World != nullptr && ProjectileClass != nullptr)
+		{
+			FActorSpawnParameters SpawnInfo;
+			SpawnInfo.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+			ADigitalProjectile* Projectile = World->SpawnActor<ADigitalProjectile>(ProjectileClass, GetMuzzelLocation(), GetMuzzelRotation(), SpawnInfo);
+			if (Projectile != nullptr)
 			{
-				AttractInterface->Spawn(this);
-				AttactActor = nullptr;
+				if (IAttractInterface* AttractInterface = Cast<IAttractInterface>(Projectile))
+				{
+					AttractInterface->Spawn(this);
+					bFiring = true;
+				}
 			}
 		}
 	}
-	////打出子弹总伤害
-	//else if (UEquipmentManagerComponent* EquipmentManager = OwnerCharacter->GetEquipmentManagerComponent())
-	//{
-	//	
-	//}
 
-	// Try and play the sound if specified
-	if (FireSound != nullptr)
+	//播放音效和动画
+	if (bFiring)
 	{
-		UGameplayStatics::PlaySoundAtLocation(this, FireSound, OwnerCharacter->GetActorLocation());
-	}
-
-	// Try and play a firing animation if specified
-	if (FireAnimation != nullptr)
-	{
-		// Get the animation object for the arms mesh
-		UAnimInstance* AnimInstance = OwnerCharacter->GetMesh1P()->GetAnimInstance();
-		if (AnimInstance != nullptr)
+		// Try and play the sound if specified
+		if (FireSound != nullptr)
 		{
-			AnimInstance->Montage_Play(FireAnimation, 1.f);
+			UGameplayStatics::PlaySoundAtLocation(this, FireSound, OwnerCharacter->GetActorLocation());
+		}
+
+		// Try and play a firing animation if specified
+		if (FireAnimation != nullptr)
+		{
+			// Get the animation object for the arms mesh
+			UAnimInstance* AnimInstance = OwnerCharacter->GetMesh1P()->GetAnimInstance();
+			if (AnimInstance != nullptr)
+			{
+				AnimInstance->Montage_Play(FireAnimation, 1.f);
+			}
 		}
 	}
 }

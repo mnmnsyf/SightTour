@@ -107,7 +107,7 @@ void ASightTourCharacter::SetHasRifle(bool bNewHasRifle, UTP_WeaponComponent* In
 {
 	bHasRifle = bNewHasRifle;
 	EquippedWeapon = bHasRifle ? InEquippedWeapon : nullptr;
-	EquipmentManagerComponent->CurrentEquippedWeapon = EquippedWeapon;
+	EquipmentManagerComponent->EquipWeapon(InEquippedWeapon);
 }
 
 bool ASightTourCharacter::GetHasRifle()

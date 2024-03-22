@@ -59,5 +59,15 @@ void UEquipmentManagerComponent::UpdateDigitalProjectileValue(const float Update
 		default:
 			break;
 	}
+	HasBullet = true;
+}
+
+void UEquipmentManagerComponent::EquipWeapon(UTP_WeaponComponent* InEquippedWeapon)
+{
+	if (InEquippedWeapon)
+	{
+		CurrentEquippedWeapon = InEquippedWeapon;
+		EquippedWeapons.Add(InEquippedWeapon);
+	}
 }
 

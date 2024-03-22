@@ -42,10 +42,6 @@ protected:
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 public:
-	/** Projectile class to spawn */
-	UPROPERTY(EditDefaultsOnly, Category = "Weapon | Projectile")
-	TSubclassOf<class ASightTourProjectile> ProjectileClass;
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon | Projectile")
 	EWeaponType WeaponType = EWeaponType::None;
 
