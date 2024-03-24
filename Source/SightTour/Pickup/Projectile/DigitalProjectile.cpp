@@ -1,45 +1,54 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Pickup/Projectile.h"
+#include "DigitalProjectile.h"
 #include "TP_WeaponComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/SphereComponent.h"
-#include "Kismet\GameplayStatics.h"
+#include "Kismet/GameplayStatics.h"
 #include "SightTourCharacter.h"
+#include "DigitalProjectileDefines.h"
+#include "../Equipment/EquipmentManagerComponent.h"
 
-AProjectile::AProjectile()
+ADigitalProjectile::ADigitalProjectile()
 {
 	ProjectileMesh = CreateDefaultSubobject<UStaticMeshComponent>("ProjectileMesh");
 	ProjectileMesh->SetupAttachment(RootComponent);
 
-	/*ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileComp"));
-	ProjectileMovement->InitialSpeed = 1000.f;
-	ProjectileMovement->MaxSpeed = 1000.f;
-	ProjectileMovement->bRotationFollowsVelocity = true;
-	ProjectileMovement->bShouldBounce = true;*/
+	// Use a sphere as a simple collision representation
+	CollisionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComp"));
+	CollisionSphere->InitSphereRadius(5.0f);
+	CollisionSphere->BodyInstance.SetCollisionProfileName("Projectile");
+	CollisionSphere->OnComponentHit.AddDynamic(this, &ADigitalProjectile::OnHit);		// set up a notification for when this component hits something blocking
+
+	// Players can't walk on it
+	CollisionSphere->SetWalkableSlopeOverride(FWalkableSlopeOverride(WalkableSlope_Unwalkable, 0.f));
+	CollisionSphere->CanCharacterStepUpOn = ECB_No;
+
+	// Die after 3 seconds by default
+	//InitialLifeSpan = 3.0f;
 }
 
-void AProjectile::Tick(float DeltaTime)
+void ADigitalProjectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	
+
 	if (bMoving)
 	{
 		PerMove();
 	}
 }
 
-void AProjectile::BeginPlay()
+void ADigitalProjectile::BeginPlay()
 {
 	Super::BeginPlay();
 
 	bOpenPhysicSimulate = ProjectileMesh->IsSimulatingPhysics();
 }
 
-void AProjectile::Attract(class UTP_WeaponComponent* WeaponComp)
+void ADigitalProjectile::Attract(class UTP_WeaponComponent* WeaponComp)
 {
 	check(WeaponComp);
 
@@ -55,8 +64,8 @@ void AProjectile::Attract(class UTP_WeaponComponent* WeaponComp)
 	}
 }
 
-void AProjectile::Spawn(class UTP_WeaponComponent* WeaponComp)
-{	
+void ADigitalProjectile::Spawn(class UTP_WeaponComponent* WeaponComp)
+{
 	if (!WeaponComp || !ProjectileMesh)
 	{
 		return;
@@ -69,10 +78,6 @@ void AProjectile::Spawn(class UTP_WeaponComponent* WeaponComp)
 
 	if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0))
 	{
-		//const FRotator SpawnRotation = WeaponComp->GetMuzzelRotation();
-
-		//ProjectileMesh->AddImpulse(SpawnRotation.Vector() * ForceValue);
-
 		FVector MuzzleLocation = WeaponComp->GetMuzzelLocation();
 
 		//发射子弹的方向
@@ -97,7 +102,30 @@ void AProjectile::Spawn(class UTP_WeaponComponent* WeaponComp)
 	}
 }
 
-bool AProjectile::GeSpawnDirection(FVector& OutHitLocation)
+void ADigitalProjectile::OnEquipped()
+{
+	if (OwnerWeapon == nullptr || !OwnerWeapon->GetOwner() || BallConfig.IsNull())
+	{
+		return;
+	}
+	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+	if (ASightTourCharacter* SightTourCharacter = Cast<ASightTourCharacter>(Player))
+	{
+		FDigitalProjectileConfig* DigitalProjectileConfig = BallConfig.GetRow<FDigitalProjectileConfig>(TEXT("Get Digital Projectile Config"));
+		if (DigitalProjectileConfig == nullptr)
+		{
+			FMessageDialog::Open(EAppMsgType::Ok, FText::FromString(TEXT("未找到对应的子弹配置，请优先修改！")));
+		}
+
+		/*UEquipmentManagerComponent* EquipmentManagerComponent = SightTourCharacter->FindComponentByClass<UEquipmentManagerComponent>();
+		if (EquipmentManagerComponent)
+		{
+			EquipmentManagerComponent->UpdateDigitalProjectileValue(DigitalProjectileConfig->BallNumber);
+		}*/
+	}
+}
+
+bool ADigitalProjectile::GeSpawnDirection(FVector& OutHitLocation)
 {
 	if (!OwnerWeapon)
 	{
@@ -124,7 +152,7 @@ bool AProjectile::GeSpawnDirection(FVector& OutHitLocation)
 	return false;
 }
 
-bool AProjectile::TraceUnderCrosshair(FVector& OutHitLocation)
+bool ADigitalProjectile::TraceUnderCrosshair(FVector& OutHitLocation)
 {
 	FVector2D ViewportSize;
 	if (GEngine && GEngine->GameViewport)
@@ -139,7 +167,7 @@ bool AProjectile::TraceUnderCrosshair(FVector& OutHitLocation)
 
 	//获得十字准星的世界位置和方向
 	bool bScreenToWorld = UGameplayStatics::DeprojectScreenToWorld(UGameplayStatics::GetPlayerController(this, 0), CrosshairViewportLocation, CrosshairWorldPosition, CrosshairWorldDirection);
-	
+
 	//从十字准星方向打射线检测碰撞
 	if (bScreenToWorld)
 	{
@@ -159,7 +187,20 @@ bool AProjectile::TraceUnderCrosshair(FVector& OutHitLocation)
 	return false;
 }
 
-void AProjectile::PerMove()
+void ADigitalProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+	// Only add impulse and destroy projectile if we hit a physics
+	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && OtherComp->IsSimulatingPhysics())
+	{
+		OtherComp->AddImpulseAtLocation(GetVelocity() * 100.0f, GetActorLocation());
+
+		GEngine->AddOnScreenDebugMessage(-1, 1500.0f, FColor::Red, TEXT("Projectile hit"));
+
+		Destroy();
+	}
+}
+
+void ADigitalProjectile::PerMove()
 {
 	FVector DirectionVector = UKismetMathLibrary::FindLookAtRotation(this->GetActorLocation(), OwnerWeapon->GetMuzzelLocation()).Vector();
 
@@ -167,13 +208,9 @@ void AProjectile::PerMove()
 
 	if (GetActorLocation().Equals(OwnerWeapon->GetMuzzelLocation(), 50.f))
 	{
-		StopAndAttach();
 		bMoving = false;
-	}
-}
 
-void AProjectile::StopAndAttach()
-{
-	GetWorldTimerManager().ClearTimer(AttractTimer);
-	AttachToComponent(OwnerWeapon, FAttachmentTransformRules::SnapToTargetNotIncludingScale, OwnerWeapon->GetMuzzelScoketName());
+		OnEquipped();
+		Destroy();
+	}
 }

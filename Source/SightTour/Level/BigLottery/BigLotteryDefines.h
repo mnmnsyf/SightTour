@@ -4,7 +4,7 @@
 
 #include "EngineMinimal.h"
 #include "Engine/DataTable.h"
-#include "DigitalBallDefines.generated.h"
+#include "BigLotteryDefines.generated.h"
 
 USTRUCT(BlueprintType)
 struct FBigLotteryConfig : public FTableRowBase
