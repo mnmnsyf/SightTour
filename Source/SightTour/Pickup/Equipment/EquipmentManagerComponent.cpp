@@ -20,9 +20,6 @@ UEquipmentManagerComponent::UEquipmentManagerComponent()
 void UEquipmentManagerComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// ...
-	
 }
 
 void UEquipmentManagerComponent::UpdateDigitalProjectileValue(const float UpdateValue)
@@ -35,31 +32,34 @@ void UEquipmentManagerComponent::UpdateDigitalProjectileValue(const float Update
 	}
 	switch (CurrentEquippedWeapon->WeaponType)
 	{
-		case EWeaponType::AdditionGun:
-		{
-			DigitalProjectileValue += UpdateValue;
-			break;
-		}
-		case EWeaponType::DivisionGun:
-		{
-			DigitalProjectileValue -= UpdateValue;
-			break;
-		}
-		case EWeaponType::MultiplicationGun:
-		{
-			DigitalProjectileValue *= UpdateValue;
-			break;
-		}
-		case EWeaponType::SubtractionGun:
-		{
-			if(UpdateValue != 0)
-				DigitalProjectileValue /= UpdateValue;
-			break;
-		}
-		default:
-			break;
+	case EWeaponType::AdditionGun:
+	{
+		DigitalProjectileValue += UpdateValue;
+		break;
 	}
-	HasBullet = true;
+	case EWeaponType::DivisionGun:
+	{
+		DigitalProjectileValue -= UpdateValue;
+		break;
+	}
+	case EWeaponType::MultiplicationGun:
+	{
+		DigitalProjectileValue *= UpdateValue;
+		break;
+	}
+	case EWeaponType::SubtractionGun:
+	{
+		if (UpdateValue != 0)
+			DigitalProjectileValue /= UpdateValue;
+		break;
+	}
+	default:
+		break;
+	}
+	if (HasBullet == false)
+	{
+		HasBullet = true;
+	}
 }
 
 void UEquipmentManagerComponent::EquipWeapon(UTP_WeaponComponent* InEquippedWeapon)
@@ -70,4 +70,3 @@ void UEquipmentManagerComponent::EquipWeapon(UTP_WeaponComponent* InEquippedWeap
 		EquippedWeapons.Add(InEquippedWeapon);
 	}
 }
-

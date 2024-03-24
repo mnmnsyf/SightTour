@@ -4,9 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "../DigitalProjectile.h"
+#include "../Projectile/DigitalProjectile.h"
 #include "EquipmentManagerComponent.generated.h"
 
+class UObject;
 class UTP_WeaponComponent;
 
 /**
@@ -28,7 +29,7 @@ protected:
 public:
 	FORCEINLINE UTP_WeaponComponent* GetCurrentEquippedWeapon() const { return CurrentEquippedWeapon; }
 
-	FORCEINLINE TSubclassOf<ADigitalProjectile> GetProjectileClass() const { return HasBullet ? ProjectileClass : nullptr; }
+	FORCEINLINE TSubclassOf<ADigitalProjectile> GetProjectileClass() const { return HasBullet ? DigitalProjectileClass : nullptr; }
 
 	FORCEINLINE float GetDigitalProjectileValue() const { return DigitalProjectileValue; }
 
@@ -45,7 +46,7 @@ protected:
 
 	//打出的子弹
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon | Projectile")
-	TSubclassOf<ADigitalProjectile> ProjectileClass;
+	TSubclassOf<ADigitalProjectile> DigitalProjectileClass;
 
 	//持有的枪械
 	UPROPERTY()
@@ -54,5 +55,4 @@ protected:
 	//现在手持的枪械
 	UPROPERTY()
 	UTP_WeaponComponent* CurrentEquippedWeapon = nullptr;
-
 };
