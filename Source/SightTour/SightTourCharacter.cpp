@@ -57,6 +57,14 @@ void ASightTourCharacter::BeginPlay()
 
 }
 
+void ASightTourCharacter::Tick(float DeltaTime)
+{
+	if (TickDashTime > 0.f)
+	{
+		TickDashTime -= DeltaTime;
+	}
+}
+
 //////////////////////////////////////////////////////////////////////////// Input
 
 void ASightTourCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
@@ -73,6 +81,9 @@ void ASightTourCharacter::SetupPlayerInputComponent(class UInputComponent* Playe
 
 		//Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ASightTourCharacter::Look);
+
+		//冲刺
+		EnhancedInputComponent->BindAction(DashAction, ETriggerEvent::Triggered, this, &ASightTourCharacter::Dash);
 	}
 }
 
@@ -100,6 +111,24 @@ void ASightTourCharacter::Look(const FInputActionValue& Value)
 		// add yaw and pitch input to controller
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
+	}
+}
+
+void ASightTourCharacter::Dash(const FInputActionValue& Value)
+{
+	//Calculate dash direction and select appropriate animation
+
+	//If we have a non-zero dash, commit the ability
+	if (TickDashTime <= 0.f)
+	{
+		FVector2D LookAxisVector = Value.Get<FVector2D>();
+
+		if (Controller != nullptr)
+		{
+			AddControllerYawInput(LookAxisVector.X);
+			AddControllerPitchInput(LookAxisVector.Y);
+		}
+		TickDashTime = DashCoolTime;
 	}
 }
 

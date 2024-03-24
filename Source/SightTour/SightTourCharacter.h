@@ -26,6 +26,8 @@ public:
 protected:
 	virtual void BeginPlay();
 
+	virtual void Tick(float DeltaTime) override;
+
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
 
 public:
@@ -51,6 +53,9 @@ protected:
 
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
+
+	//冲刺
+	void Dash(const FInputActionValue& Value);
 
 public:
 	/** Look Input Action */
@@ -87,6 +92,15 @@ protected:
 	/** Move Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	class UInputAction* MoveAction;
+
+	/** Dash Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* DashAction;
+
+	UPROPERTY(EditAnywhere, blueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = "true"))
+	float DashCoolTime = 3.0f;
+
+	float TickDashTime = 0.0f;
 
 };
 
