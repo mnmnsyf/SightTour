@@ -9,6 +9,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "TP_WeaponComponent.h"
 #include "Pickup/Equipment/EquipmentManagerComponent.h"
+#include "UI/SightTourHUD.h"
 
 //////////////////////////////////////////////////////////////////////////
 // ASightTourCharacter
@@ -46,15 +47,20 @@ void ASightTourCharacter::BeginPlay()
 	// Call the base class  
 	Super::BeginPlay();
 
+	APlayerController* PlayerController = GetPlayerController();
+	check(PlayerController);
+
 	//Add Input Mapping Context
-	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
+	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
-		{
-			Subsystem->AddMappingContext(DefaultMappingContext, 0);
-		}
+		Subsystem->AddMappingContext(DefaultMappingContext, 0);
 	}
 
+
+	ASightTourHUD* HUD = Cast<ASightTourHUD>(PlayerController->GetHUD());
+	ULocalPlayer* LocalPlayer = PlayerController->GetLocalPlayer();
+	check(HUD && LocalPlayer);
+	HUD->NotifyPlayerAdded(LocalPlayer);
 }
 
 void ASightTourCharacter::Tick(float DeltaTime)
@@ -87,6 +93,11 @@ void ASightTourCharacter::SetupPlayerInputComponent(class UInputComponent* Playe
 	}
 }
 
+
+APlayerController* ASightTourCharacter::GetPlayerController()
+{
+	return Cast<APlayerController>(Controller);
+}
 
 void ASightTourCharacter::Move(const FInputActionValue& Value)
 {

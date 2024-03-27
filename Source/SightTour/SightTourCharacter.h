@@ -47,6 +47,9 @@ public:
 	
 	UEquipmentManagerComponent* GetEquipmentManagerComponent() const { return EquipmentManagerComponent; }
 
+private:
+	APlayerController* GetPlayerController();
+
 protected:
 	/** Called for movement input */
 	void Move(const FInputActionValue& Value);
