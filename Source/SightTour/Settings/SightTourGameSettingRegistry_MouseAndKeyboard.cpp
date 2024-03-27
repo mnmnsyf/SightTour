@@ -17,7 +17,7 @@
 
 class ULocalPlayer;
 
-#define LOCTEXT_NAMESPACE "Lyra"
+#define LOCTEXT_NAMESPACE "SightTour"
 
 UGameSettingCollection* USightTourGameSettingRegistry::InitializeMouseAndKeyboardSettings(ULocalPlayer* InLocalPlayer)
 {

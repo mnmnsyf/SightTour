@@ -4,6 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
+#include "CommonActivatableWidget.h"
+#include "GameplayTagContainer.h"
+
 #include "SightTourHUD.generated.h"
 
 class UPrimaryGameLayout;
@@ -11,6 +14,20 @@ class ULocalPlayer;
 /**
  * 
  */
+USTRUCT()
+struct FLyraHUDLayoutRequest
+{
+	GENERATED_BODY()
+
+	// The layout widget to spawn
+	UPROPERTY(EditAnywhere, Category = UI, meta = (AssetBundles = "Client"))
+	TSoftClassPtr<UCommonActivatableWidget> LayoutClass;
+
+	// The layer to insert the widget in
+	UPROPERTY(EditAnywhere, Category = UI, meta = (Categories = "UI.Layer"))
+	FGameplayTag LayerID;
+};
+
 UCLASS(Config = Game)
 class SIGHTTOUR_API ASightTourHUD : public AHUD
 {
@@ -30,7 +47,20 @@ protected:
 	void CreateLayoutWidget(ULocalPlayer* LocalPlayer);
 	TSubclassOf<UPrimaryGameLayout> GetLayoutWidgetClass();
 
+	//EDataValidationResult IsDataValid(class FDataValidationContext& Context) const override;
+
+private:
+	void AddLayouts();
+
 private:
 	UPROPERTY(EditAnywhere)
 	TSoftClassPtr<UPrimaryGameLayout> PrimaryLayoutClass;
+
+	// Layout to add to the HUD
+	UPROPERTY(EditAnywhere, Category = UI, meta = (TitleProperty = "{LayerID} -> {LayoutClass}"))
+	TArray<FLyraHUDLayoutRequest> HUDLayout;
+
+private:
+	UPROPERTY()
+	UPrimaryGameLayout* PrimaryLayout;
 };
