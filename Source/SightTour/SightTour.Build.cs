@@ -31,7 +31,6 @@ public class SightTour : ModuleRules
                 "GameplayStateTreeModule",
                 "GameplayTasks",
                 "GameplayTags",
-               // "StructUtilsEngine",
             });
 
         PrivateDependencyModuleNames.AddRange(
@@ -40,6 +39,12 @@ public class SightTour : ModuleRules
                 "SlateCore",
                 "PropertyPath",
                 "StructUtils",
+                "UMG",
+                "CommonUI",
+                "CommonInput",
+                "GameSettings",
+                "CommonGame",
+                "CommonUser",
             }
         );
     }
