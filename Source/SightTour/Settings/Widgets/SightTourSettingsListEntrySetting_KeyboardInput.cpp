@@ -80,6 +80,7 @@ void USightTourSettingsListEntrySetting_KeyboardInput::ChangeBinding(int32 InKey
 	if (!ActionsForKey.IsEmpty())
 	{
 		UKeyAlreadyBoundWarning* KeyAlreadyBoundWarning = CastChecked<UKeyAlreadyBoundWarning>(
+		//TODO 不用commonGame的UCommonUIExtensions接口，直接用HUD
 		UCommonUIExtensions::PushContentToLayer_ForPlayer(GetOwningLocalPlayer(), PressAnyKeyLayer, KeyAlreadyBoundWarningPanelClass));
 
 		FString ActionNames;

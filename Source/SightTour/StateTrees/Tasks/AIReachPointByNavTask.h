@@ -46,7 +46,7 @@ struct SIGHTTOUR_API FAIReachPointByNavTaskInstanceData
 	bool bClearMovePointStruct = false;
 
 	//依赖导航计算得出的路径
-	UPROPERTY()
+	UPROPERTY() 
 	TArray<FVector> NavPath;
 
 	//当前遍历的路径下标
@@ -66,7 +66,7 @@ struct SIGHTTOUR_API FAIReachPointByNavTaskInstanceData
 
 	//本次跟随的目标导航点
 	UPROPERTY()
-	FVector CurTargetLocation;
+	FVector CurTargetLocation = FVector(0.0f, 0.0f, 0.0f);;
 };
 
 USTRUCT(DisplayName = " Reach Point By Nav")

@@ -24,7 +24,7 @@ struct FDigitalProjectileConfig : public FTableRowBase
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, meta = (DisplayName = "小球数字"))
-	float BallNumber;
+	float BallNumber = 1.0f;
 
 	UPROPERTY(EditAnywhere, meta = (DisplayName = "小球类型"))
 	EDigitalProjectType BallType = EDigitalProjectType::None;

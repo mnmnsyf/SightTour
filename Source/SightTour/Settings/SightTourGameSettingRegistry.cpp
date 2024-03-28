@@ -8,8 +8,6 @@
 
 DEFINE_LOG_CATEGORY(LogSightTourGameSettingRegistry);
 
-#define LOCTEXT_NAMESPACE "SightTour"
-
 //--------------------------------------
 // USightTourGameSettingRegistry
 //--------------------------------------

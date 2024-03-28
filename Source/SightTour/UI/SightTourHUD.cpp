@@ -6,26 +6,23 @@
 #include "Engine/LocalPlayer.h"
 #include "CommonUIExtensions.h"
 #include "PrimaryGameLayout.h"
+#include "../../../../../../../Source/Runtime/Engine/Classes/Kismet/GameplayStatics.h"
 
 ASightTourHUD::ASightTourHUD(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 
 }
 
-void ASightTourHUD::AddLayoutToViewport(ULocalPlayer* LocalPlayer, UPrimaryGameLayout* Layout)
+void ASightTourHUD::BeginPlay()
 {
-	UE_LOG(LogTemp, Log, TEXT("[%s] is adding player [%s]'s root layout [%s] to the viewport"), *GetName(), *GetNameSafe(LocalPlayer), *GetNameSafe(Layout));
+	Super::BeginPlay();
+}
 
-	Layout->SetPlayerContext(FLocalPlayerContext(LocalPlayer));
-	Layout->AddToPlayerScreen(1000);
+void ASightTourHUD::NotifyPlayerAdded(ULocalPlayer* LocalPlayer)
+{
+	CreateLayoutWidget(LocalPlayer);
 
-#if WITH_EDITOR
-	if (GIsEditor && LocalPlayer->IsPrimaryPlayer())
-	{
-		// So our controller will work in PIE without needing to click in the viewport
-		FSlateApplication::Get().SetUserFocusToGameViewport(0);
-	}
-#endif
+	PushWidgetToLayerStack();
 }
 
 void ASightTourHUD::CreateLayoutWidget(ULocalPlayer* LocalPlayer)
@@ -44,37 +41,29 @@ void ASightTourHUD::CreateLayoutWidget(ULocalPlayer* LocalPlayer)
 	}
 }
 
+void ASightTourHUD::AddLayoutToViewport(ULocalPlayer* LocalPlayer, UPrimaryGameLayout* Layout)
+{
+	UE_LOG(LogTemp, Log, TEXT("[%s] is adding player [%s]'s root layout [%s] to the viewport"), *GetName(), *GetNameSafe(LocalPlayer), *GetNameSafe(Layout));
+
+	Layout->SetPlayerContext(FLocalPlayerContext(LocalPlayer));
+	Layout->AddToPlayerScreen(1000);
+
+#if WITH_EDITOR
+	if (GIsEditor && LocalPlayer->IsPrimaryPlayer())
+	{
+		// So our controller will work in PIE without needing to click in the viewport
+		FSlateApplication::Get().SetUserFocusToGameViewport(0);
+	}
+#endif
+}
+
 TSubclassOf<UPrimaryGameLayout> ASightTourHUD::GetLayoutWidgetClass()
 {
+	check(!PrimaryLayoutClass.IsNull());
 	return PrimaryLayoutClass.LoadSynchronous();
 }
 
-//EDataValidationResult ASightTourHUD::IsDataValid(class FDataValidationContext& Context) const
-//{
-//	EDataValidationResult Result = CombineDataValidationResults(Super::IsDataValid(Context), EDataValidationResult::Valid);
-//
-//	{
-//		int32 EntryIndex = 0;
-//		for (const FLyraHUDLayoutRequest& Entry : HUDLayout)
-//		{
-//			if (Entry.LayoutClass.IsNull())
-//			{
-//				Result = EDataValidationResult::Invalid;
-//				Context.AddError(FText::Format(LOCTEXT("LayoutHasNullClass", "Null WidgetClass at index {0} in Layout"), FText::AsNumber(EntryIndex)));
-//			}
-//
-//			if (!Entry.LayerID.IsValid())
-//			{
-//				Result = EDataValidationResult::Invalid;
-//				Context.AddError(FText::Format(LOCTEXT("LayoutHasNoTag", "LayerID is not set at index {0} in Widgets"), FText::AsNumber(EntryIndex)));
-//			}
-//
-//			++EntryIndex;
-//		}
-//	}
-//}
-
-void ASightTourHUD::AddLayouts()
+void ASightTourHUD::PushWidgetToLayerStack()
 {
 	if (ULocalPlayer* LocalPlayer = Cast<ULocalPlayer>(GetOwningPlayerController()->Player))
 	{
@@ -82,24 +71,21 @@ void ASightTourHUD::AddLayouts()
 		{
 			check(!Entry.LayoutClass.IsNull());
 
-			if (TSubclassOf<UCommonActivatableWidget> ConcreteWidgetClass = Entry.LayoutClass.Get())
+			if (TSubclassOf<UCommonActivatableWidget> ConcreteWidgetClass = Entry.LayoutClass.LoadSynchronous())
 			{
-				//UCommonUIExtensions::PushContentToLayer_ForPlayer(LocalPlayer, Entry.LayerID, ConcreteWidgetClass);
-
 				 PrimaryLayout->PushWidgetToLayerStack(Entry.LayerID, ConcreteWidgetClass);
 			}
 		}
 	}
 }
 
-void ASightTourHUD::BeginPlay()
+void ASightTourHUD::PushStreamedContentToLayer_ForPlayer(const ULocalPlayer* LocalPlayer, FGameplayTag LayerName, TSoftClassPtr<UCommonActivatableWidget> WidgetClass)
 {
-	Super::BeginPlay();
-}
+	if (!ensure(LocalPlayer) || !ensure(!WidgetClass.IsNull()))
+	{
+		return;
+	}
 
-void ASightTourHUD::NotifyPlayerAdded(ULocalPlayer* LocalPlayer)
-{
-	CreateLayoutWidget(LocalPlayer);
-
-	AddLayouts();
+	const bool bSuspendInputUntilComplete = true;
+	PrimaryLayout->PushWidgetToLayerStackAsync(LayerName, bSuspendInputUntilComplete, WidgetClass);
 }

@@ -10,6 +10,7 @@
 #include "TP_WeaponComponent.h"
 #include "Pickup/Equipment/EquipmentManagerComponent.h"
 #include "UI/SightTourHUD.h"
+#include "../../../../../../../Plugins/EnhancedInput/Source/EnhancedInput/Public/UserSettings/EnhancedInputUserSettings.h"
 
 //////////////////////////////////////////////////////////////////////////
 // ASightTourCharacter
@@ -51,10 +52,10 @@ void ASightTourCharacter::BeginPlay()
 	check(PlayerController);
 
 	//Add Input Mapping Context
-	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+	/*if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 	{
 		Subsystem->AddMappingContext(DefaultMappingContext, 0);
-	}
+	}*/
 
 
 	ASightTourHUD* HUD = Cast<ASightTourHUD>(PlayerController->GetHUD());
@@ -75,6 +76,23 @@ void ASightTourCharacter::Tick(float DeltaTime)
 
 void ASightTourCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
+	const APlayerController* PC = GetController<APlayerController>();
+	check(PC);
+
+	const ULocalPlayer* LP = PC->GetLocalPlayer();
+	check(LP);
+
+	UEnhancedInputLocalPlayerSubsystem* EISubsystem = LP->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
+	check(EISubsystem);
+
+	EISubsystem->ClearAllMappings();
+
+	// Actually add the config to the local player	
+	FModifyContextOptions Options = {};
+	Options.bIgnoreAllPressedKeysUntilRelease = false;
+	Options.bNotifyUserSettings = true;						
+	EISubsystem->AddMappingContext(DefaultMappingContext, 0, Options);
+
 	// Set up action bindings
 	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
 	{

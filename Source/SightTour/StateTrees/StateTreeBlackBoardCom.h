@@ -59,7 +59,7 @@ public:
 
 public:
 	//配置项参数和运行时参数的资产
-	UPROPERTY(SaveGame, EditAnywhere, BlueprintReadWrite, meta = (AllowedClasses = "StateTreeBlackBoardConfig", DisplayName = "状态树黑板配置资产"))
+	UPROPERTY(SaveGame, EditAnywhere, BlueprintReadWrite, meta = (AllowedClasses = "/Script/SightTour.StateTreeBlackBoardConfig", DisplayName = "状态树黑板配置资产"))
 	FSoftObjectPath STBBConfig;
 
 	//配置项参数
