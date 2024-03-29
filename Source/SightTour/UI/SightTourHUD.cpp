@@ -87,5 +87,18 @@ void ASightTourHUD::PushStreamedContentToLayer_ForPlayer(const ULocalPlayer* Loc
 	}
 
 	const bool bSuspendInputUntilComplete = true;
+
+	check(PrimaryLayout);
 	PrimaryLayout->PushWidgetToLayerStackAsync(LayerName, bSuspendInputUntilComplete, WidgetClass);
+}
+
+UCommonActivatableWidget* ASightTourHUD::PushContentToLayer_ForPlayer(const ULocalPlayer* LocalPlayer, FGameplayTag LayerName, TSubclassOf<UCommonActivatableWidget> WidgetClass)
+{
+	if (!ensure(LocalPlayer) || !ensure(WidgetClass != nullptr))
+	{
+		return nullptr;
+	}
+
+	check(PrimaryLayout);
+	return PrimaryLayout->PushWidgetToLayerStack(LayerName, WidgetClass);
 }

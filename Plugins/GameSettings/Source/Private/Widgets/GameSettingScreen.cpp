@@ -37,8 +37,6 @@ UGameSettingRegistry* UGameSettingScreen::GetOrCreateRegistry()
 		UGameSettingRegistry* NewRegistry = this->CreateRegistry();
 		NewRegistry->OnSettingChangedEvent.AddUObject(this, &ThisClass::HandleSettingChanged);
 
-		Settings_Panel->SetRegistry(NewRegistry);
-
 		Registry = NewRegistry;
 	}
 

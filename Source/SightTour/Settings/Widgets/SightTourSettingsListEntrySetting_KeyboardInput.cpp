@@ -8,6 +8,8 @@
 #include "UI/Foundation/LyraButtonBase.h"
 #include "Widgets/Misc/GameSettingPressAnyKey.h"
 #include "Widgets/Misc/KeyAlreadyBoundWarning.h"
+#include "../../../../../../../Source/Runtime/Engine/Classes/Engine/LocalPlayer.h"
+#include "../UI/SightTourHUD.h"
 
 #define LOCTEXT_NAMESPACE "SightTourSettings"
 
@@ -34,16 +36,30 @@ void USightTourSettingsListEntrySetting_KeyboardInput::NativeOnInitialized()
 
 void USightTourSettingsListEntrySetting_KeyboardInput::HandlePrimaryKeyClicked()
 {
-	UGameSettingPressAnyKey* PressAnyKeyPanel = CastChecked<UGameSettingPressAnyKey>(
-		UCommonUIExtensions::PushContentToLayer_ForPlayer(GetOwningLocalPlayer(), PressAnyKeyLayer, PressAnyKeyPanelClass));
+	/*UGameSettingPressAnyKey* PressAnyKeyPanel = CastChecked<UGameSettingPressAnyKey>(
+		UCommonUIExtensions::PushContentToLayer_ForPlayer(GetOwningLocalPlayer(), PressAnyKeyLayer, PressAnyKeyPanelClass));*/
+
+	//TODO 临时写法
+	ULocalPlayer* LocalPlayer = GetOwningLocalPlayer();
+	APlayerController* PlayerController = GetOwningLocalPlayer()->GetPlayerController(GetWorld());
+	ASightTourHUD* HUD = Cast<ASightTourHUD>(PlayerController->GetHUD());
+
+	UGameSettingPressAnyKey* PressAnyKeyPanel = CastChecked<UGameSettingPressAnyKey>(HUD->PushContentToLayer_ForPlayer(LocalPlayer, PressAnyKeyLayer, PressAnyKeyPanelClass));
+
 	PressAnyKeyPanel->OnKeySelected.AddUObject(this, &ThisClass::HandlePrimaryKeySelected, PressAnyKeyPanel);
 	PressAnyKeyPanel->OnKeySelectionCanceled.AddUObject(this, &ThisClass::HandleKeySelectionCanceled, PressAnyKeyPanel);
 }
 
 void USightTourSettingsListEntrySetting_KeyboardInput::HandleSecondaryKeyClicked()
 {
-	UGameSettingPressAnyKey* PressAnyKeyPanel = CastChecked<UGameSettingPressAnyKey>(
-		UCommonUIExtensions::PushContentToLayer_ForPlayer(GetOwningLocalPlayer(), PressAnyKeyLayer, PressAnyKeyPanelClass));
+	//TODO 临时写法
+	ULocalPlayer* LocalPlayer = GetOwningLocalPlayer();
+	APlayerController* PlayerController = GetOwningLocalPlayer()->GetPlayerController(GetWorld());
+	ASightTourHUD* HUD = Cast<ASightTourHUD>(PlayerController->GetHUD());
+
+	UGameSettingPressAnyKey* PressAnyKeyPanel = CastChecked<UGameSettingPressAnyKey>(HUD->PushContentToLayer_ForPlayer(LocalPlayer, PressAnyKeyLayer, PressAnyKeyPanelClass));
+
+
 	PressAnyKeyPanel->OnKeySelected.AddUObject(this, &ThisClass::HandleSecondaryKeySelected, PressAnyKeyPanel);
 	PressAnyKeyPanel->OnKeySelectionCanceled.AddUObject(this, &ThisClass::HandleKeySelectionCanceled, PressAnyKeyPanel);
 }
@@ -79,9 +95,13 @@ void USightTourSettingsListEntrySetting_KeyboardInput::ChangeBinding(int32 InKey
 	KeyboardInputSetting->GetAllMappedActionsFromKey(InKeyBindSlot, InKey, ActionsForKey);
 	if (!ActionsForKey.IsEmpty())
 	{
-		UKeyAlreadyBoundWarning* KeyAlreadyBoundWarning = CastChecked<UKeyAlreadyBoundWarning>(
-		//TODO 不用commonGame的UCommonUIExtensions接口，直接用HUD
-		UCommonUIExtensions::PushContentToLayer_ForPlayer(GetOwningLocalPlayer(), PressAnyKeyLayer, KeyAlreadyBoundWarningPanelClass));
+		//TODO 后续用UIManager统一管理
+		ULocalPlayer* LocalPlayer = GetOwningLocalPlayer();
+		APlayerController* PlayerController = GetOwningLocalPlayer()->GetPlayerController(GetWorld());
+		ASightTourHUD* HUD = Cast<ASightTourHUD>(PlayerController->GetHUD());
+
+		UKeyAlreadyBoundWarning* KeyAlreadyBoundWarning = CastChecked<UKeyAlreadyBoundWarning>(HUD->PushContentToLayer_ForPlayer(LocalPlayer, PressAnyKeyLayer, KeyAlreadyBoundWarningPanelClass));
+
 
 		FString ActionNames;
 		for (FName ActionName : ActionsForKey)

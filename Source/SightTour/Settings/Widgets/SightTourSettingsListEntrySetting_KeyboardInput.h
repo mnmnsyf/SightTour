@@ -13,6 +13,7 @@ class UGameSettingPressAnyKey;
 class ULyraButtonBase;
 class USightTourSettingKeyboardInput;
 class UObject;
+class UUserWidget;
 
 //////////////////////////////////////////////////////////////////////////
 // USightTourSettingsListEntrySetting_KeyboardInput

@@ -29,8 +29,6 @@ void ULyraHUDLayout::HandleEscapeAction()
 {
 	if (ensure(!EscapeMenuClass.IsNull()))
 	{
-		//UCommonUIExtensions::PushStreamedContentToLayer_ForPlayer(GetOwningLocalPlayer(), TAG_UI_LAYER_MENU, EscapeMenuClass);
-
 		ULocalPlayer* LocalPlayer = GetOwningLocalPlayer();
 		APlayerController* PlayerController = GetOwningLocalPlayer()->GetPlayerController(GetWorld());
 		ASightTourHUD* HUD = Cast<ASightTourHUD>(PlayerController->GetHUD());
