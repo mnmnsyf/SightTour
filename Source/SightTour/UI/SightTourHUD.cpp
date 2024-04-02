@@ -85,7 +85,7 @@ void ASightTourHUD::PushStreamedContentToLayer_ForPlayer(const ULocalPlayer* Loc
 	{
 		return;
 	}
-
+	
 	const bool bSuspendInputUntilComplete = true;
 
 	check(PrimaryLayout);

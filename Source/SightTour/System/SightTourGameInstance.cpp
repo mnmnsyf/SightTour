@@ -5,8 +5,16 @@
 #include "../UI/SightTourHUD.h"
 #include "Kismet/GameplayStatics.h"
 
+USightTourGameInstance* USightTourGameInstance::Instance = nullptr;
+
 USightTourGameInstance::USightTourGameInstance(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
+}
+
+void USightTourGameInstance::Init()
+{
+	Instance = this;
+	Super::Init();
 }
 
 int32 USightTourGameInstance::AddLocalPlayer(ULocalPlayer* NewPlayer, FPlatformUserId UserId)

@@ -17,6 +17,14 @@ class SIGHTTOUR_API USightTourGameInstance : public UGameInstance
 public:
 	USightTourGameInstance(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
+	void Init() override;
+
+	static USightTourGameInstance* Get() { return Instance; }
+
 	int32 AddLocalPlayer(ULocalPlayer* NewPlayer, FPlatformUserId UserId) override;
 
+
+
+private:
+	static USightTourGameInstance* Instance;
 };

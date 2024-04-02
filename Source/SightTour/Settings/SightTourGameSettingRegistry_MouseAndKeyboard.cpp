@@ -152,7 +152,7 @@ UGameSettingCollection* USightTourGameSettingRegistry::InitializeMouseAndKeyboar
 		auto GetOrCreateSettingCollection = [&CategoryToSettingCollection, &Screen](FText DisplayCategory) -> UGameSettingCollection*
 		{
 			static const FString DefaultDevName = TEXT("Default_KBM");
-			static const FText DefaultDevDisplayName = NSLOCTEXT("LyraInputSettings", "LyraInputDefaults", "Default Experiences");
+			static const FText DefaultDevDisplayName = NSLOCTEXT("SightTourInputSettings", "SightTourInputDefaults", "Default Experiences");
 
 			if (DisplayCategory.IsEmpty())
 			{

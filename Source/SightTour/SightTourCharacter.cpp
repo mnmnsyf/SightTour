@@ -87,13 +87,13 @@ void ASightTourCharacter::SetupPlayerInputComponent(class UInputComponent* Playe
 
 	EISubsystem->ClearAllMappings();
 
-	// Actually add the config to the local player	
+	// Actually add the config to the local player,添加本地玩家的按键配置，bNotifyUserSettings设为true	
 	FModifyContextOptions Options = {};
 	Options.bIgnoreAllPressedKeysUntilRelease = false;
 	Options.bNotifyUserSettings = true;						
 	EISubsystem->AddMappingContext(DefaultMappingContext, 0, Options);
 
-	// Set up action bindings
+	// Set up action bindings 绑定按键到具体接口
 	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
 	{
 		//Jumping
