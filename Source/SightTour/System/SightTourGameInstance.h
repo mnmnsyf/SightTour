@@ -21,9 +21,9 @@ public:
 
 	static USightTourGameInstance* Get() { return Instance; }
 
+	//~ Begin UGameInstance interface
 	int32 AddLocalPlayer(ULocalPlayer* NewPlayer, FPlatformUserId UserId) override;
-
-
+	//~ End UGameInstance interface
 
 private:
 	static USightTourGameInstance* Instance;
