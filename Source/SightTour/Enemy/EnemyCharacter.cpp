@@ -2,20 +2,23 @@
 
 
 #include "Enemy/EnemyCharacter.h"
+#include "Kismet/GameplayStatics.h"
+#include "Sound/SoundCue.h"
 
 // Sets default values
 AEnemyCharacter::AEnemyCharacter()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 }
 
-// Called when the game starts or when spawned
+
 void AEnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	//开始游戏后将敌人当前生命值和最大生命值相匹配
+	CurrentHealth = MaxHealth;
 }
 
 // Called every frame
@@ -25,15 +28,7 @@ void AEnemyCharacter::Tick(float DeltaTime)
 
 }
 
-// Called to bind functionality to input
-void AEnemyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
-}
-
 void AEnemyCharacter::SetCharacterMoveByForce(const FVector& ForceDir)
 {
 	AddMovementInput(ForceDir);
 }
-

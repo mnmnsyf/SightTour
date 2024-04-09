@@ -3,14 +3,13 @@
 
 #include "BigLottery.h"
 #include "Components/BoxComponent.h"
+#include "Components/SceneComponent.h"
 #include "BigLotteryComponent.h"
 
-// Sets default values
 ABigLottery::ABigLottery()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
-
 	RootComponent = CreateDefaultSubobject<USceneComponent>("SceneComponent");
 	TriggerBox = CreateDefaultSubobject<UBoxComponent>("TriggerBox");
 	TriggerBox->SetupAttachment(RootComponent);

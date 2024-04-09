@@ -23,9 +23,23 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
 	//向移动添加力的方向 forceDir传单位方向
 	void SetCharacterMoveByForce(const FVector& ForceDir);
+
+private:
+	/** 敌人当前生命值，蓝图不可修改 */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Combat, meta = (AllowPrivateAccess = "true"))
+	float CurrentHealth;
+
+	/** 敌人最大生命值，蓝图可修改 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat, meta = (AllowPrivateAccess = "true"))
+	float MaxHealth;
+
+	/** 被子弹击中时产生的粒子效果 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat, meta = (AllowPrivateAccess = "true"))
+	class UParticleSystem* ImpactParticles;
+
+	/** 被子弹击中时播放的声音 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat, meta = (AllowPrivateAccess = "true"))
+	class USoundCue* ImpactSound;
 };
