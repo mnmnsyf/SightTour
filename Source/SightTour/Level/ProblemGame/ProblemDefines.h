@@ -18,5 +18,5 @@ struct FProblemConfig : public FTableRowBase
 	FName EnemyID;
 
 	UPROPERTY(EditAnywhere, DisplayName = "问题", Meta = (ExcludeBaseStruct, BaseStruct = "/Script/SightTour.ProblemBase"))
-	TArray<FInstancedStruct> Problem;
+	TArray<FInstancedStruct> Problems;
 };

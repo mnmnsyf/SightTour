@@ -22,5 +22,12 @@ struct SIGHTTOUR_API FProblem_Formula : public FProblemBase
 
 	virtual void ResetProblem() override;
 
+	//表达式求值
+	int32 ExpressionEvaluation(const TArray<FString>& Expression);
 
+	/** 等号左边的算式 */
+	TArray<FString> LeftExpression;
+
+	/** 等号右边的算式 */
+	TArray<FString> RightExpression;
 };
