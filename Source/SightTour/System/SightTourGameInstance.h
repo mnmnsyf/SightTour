@@ -25,6 +25,15 @@ public:
 	int32 AddLocalPlayer(ULocalPlayer* NewPlayer, FPlatformUserId UserId) override;
 	//~ End UGameInstance interface
 
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (DisplayName = "PrimaryLayoutClass", Category = "UI"))
+	TSoftClassPtr<class UPrimaryGameLayout> PrimaryLayoutClass;
+
+	// Layout to add to the HUD
+	UPROPERTY(EditAnywhere, Category = UI, meta = (TitleProperty = "{LayerID} -> {LayoutClass}", Category = "UI"))
+	TArray<struct FSightTourHUDLayoutRequest> HUDLayout;
+
 private:
 	static USightTourGameInstance* Instance;
 };

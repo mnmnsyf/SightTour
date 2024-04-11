@@ -42,30 +42,28 @@ public:
 	static USightTourUIManager* Get();
 
 public:
+	void NotifyPlayerAdded(ULocalPlayer* LocalPlayer);
+
 	UFUNCTION(BlueprintCallable, BlueprintCosmetic, Category = "Global UI Extensions")
 	void PushStreamedContentToLayer_ForPlayer(const ULocalPlayer* LocalPlayer, UPARAM(meta = (Categories = "UI.Layer")) FGameplayTag LayerName, UPARAM(meta = (AllowAbstract = false)) TSoftClassPtr<UCommonActivatableWidget> WidgetClass);
 
 	UFUNCTION(BlueprintCallable, BlueprintCosmetic, Category = "Global UI Extensions")
 	UCommonActivatableWidget* PushContentToLayer_ForPlayer(const ULocalPlayer* LocalPlayer, UPARAM(meta = (Categories = "UI.Layer")) FGameplayTag LayerName, UPARAM(meta = (AllowAbstract = false)) TSubclassOf<UCommonActivatableWidget> WidgetClass);
 
-	void AddLayoutToViewport(ULocalPlayer* LocalPlayer, UPrimaryGameLayout* Layout);
-
 protected:
-	void CreateLayoutWidget(ULocalPlayer* LocalPlayer);
+	void CreatePrimaryLayout(ULocalPlayer* LocalPlayer);
 
 	TSubclassOf<UPrimaryGameLayout> GetLayoutWidgetClass();
+
+	void AddPrimaryGameLayoutToViewport(ULocalPlayer* LocalPlayer, UPrimaryGameLayout* Layout);
+
+	/** 添加HUDLayout栈到PrimaryLayout中 */
+	void PushHUDLayerToPrimaryLayoutStack();
 
 private:
 	bool bInitialized;
 
 private:
-	UPROPERTY(EditAnywhere)
-	TSoftClassPtr<UPrimaryGameLayout> PrimaryLayoutClass;
-
-	// Layout to add to the HUD
-	UPROPERTY(EditAnywhere, Category = UI, meta = (TitleProperty = "{LayerID} -> {LayoutClass}"))
-	TArray<FSightTourHUDLayoutRequest> HUDLayout;
-
 	UPROPERTY()
 	UPrimaryGameLayout* PrimaryLayout;
 };

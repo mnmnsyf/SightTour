@@ -4,6 +4,7 @@
 #include "System/SightTourGameInstance.h"
 #include "../UI/SightTourHUD.h"
 #include "Kismet/GameplayStatics.h"
+#include "../UI/Subsystem/SightTourUIManager.h"
 
 USightTourGameInstance* USightTourGameInstance::Instance = nullptr;
 
@@ -19,5 +20,13 @@ void USightTourGameInstance::Init()
 
 int32 USightTourGameInstance::AddLocalPlayer(ULocalPlayer* NewPlayer, FPlatformUserId UserId)
 {
-	return Super::AddLocalPlayer(NewPlayer, UserId);
+	int32 ReturnVal = Super::AddLocalPlayer(NewPlayer, UserId);
+
+	/*if (ReturnVal != INDEX_NONE)
+	{
+		GetSubsystem<USightTourUIManager>()->NotifyPlayerAdded(NewPlayer);
+	}*/
+
+
+	return ReturnVal;
 }

@@ -9,8 +9,8 @@
 #include "EnhancedInputSubsystems.h"
 #include "TP_WeaponComponent.h"
 #include "Pickup/Equipment/EquipmentManagerComponent.h"
-#include "UI/SightTourHUD.h"
-#include "../../../../../../../Plugins/EnhancedInput/Source/EnhancedInput/Public/UserSettings/EnhancedInputUserSettings.h"
+#include "UserSettings/EnhancedInputUserSettings.h"
+#include "UI/Subsystem/SightTourUIManager.h"
 
 //////////////////////////////////////////////////////////////////////////
 // ASightTourCharacter
@@ -48,20 +48,14 @@ void ASightTourCharacter::BeginPlay()
 	// Call the base class  
 	Super::BeginPlay();
 
+	// 要等playercontroller加载完才能调用，暂时现在这里调
 	APlayerController* PlayerController = GetPlayerController();
 	check(PlayerController);
 
-	//Add Input Mapping Context
-	/*if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
-	{
-		Subsystem->AddMappingContext(DefaultMappingContext, 0);
-	}*/
-
-
-	ASightTourHUD* HUD = Cast<ASightTourHUD>(PlayerController->GetHUD());
 	ULocalPlayer* LocalPlayer = PlayerController->GetLocalPlayer();
-	check(HUD && LocalPlayer);
-	HUD->NotifyPlayerAdded(LocalPlayer);
+	check(LocalPlayer);
+
+	USightTourUIManager::Get()->NotifyPlayerAdded(LocalPlayer);
 }
 
 void ASightTourCharacter::Tick(float DeltaTime)
