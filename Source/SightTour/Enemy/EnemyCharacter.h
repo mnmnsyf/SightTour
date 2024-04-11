@@ -13,7 +13,7 @@ class SIGHTTOUR_API AEnemyCharacter : public ACharacter
 
 public:
 	// Sets default values for this character's properties
-	AEnemyCharacter();
+	AEnemyCharacter(const FObjectInitializer& ObjectInitializer);
 
 protected:
 	// Called when the game starts or when spawned

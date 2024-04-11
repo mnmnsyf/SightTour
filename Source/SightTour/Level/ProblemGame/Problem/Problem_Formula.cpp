@@ -3,6 +3,8 @@
 
 void FProblem_Formula::InitProblem()
 {
+	bInit = true;
+
 	TArray<TCHAR> Operator = {'+', '-', '*', '/'};
 
 	//分割等式左右两边
@@ -75,6 +77,11 @@ FName FProblem_Formula::GetProblemTypeName()
 
 bool FProblem_Formula::FillProblem(FString AnswerStr)
 {
+	if (!bInit)
+	{
+		InitProblem();
+	}
+
 	int32 EmptyStrIndex = LeftExpression.Find("");
 
 	if (EmptyStrIndex != INDEX_NONE)
@@ -95,6 +102,16 @@ bool FProblem_Formula::FillProblem(FString AnswerStr)
 
 bool FProblem_Formula::CheckAllAnswer()
 {
+	if (!bInit)
+	{
+		InitProblem();
+	}
+
+	if (LeftExpression.IsEmpty() || RightExpression.IsEmpty())
+	{
+		return false;
+	}
+
 	int32 LeftInt = ExpressionEvaluation(LeftExpression);
 	int32 RightInt = ExpressionEvaluation(RightExpression);
 
@@ -108,7 +125,16 @@ void FProblem_Formula::ResetProblem()
 
 TArray<FString> FProblem_Formula::GetUIShowList()
 {
-	throw std::logic_error("The method or operation is not implemented.");
+	if (!bInit)
+	{
+		InitProblem();
+	}
+
+	TArray<FString> ShowList = LeftExpression;
+	ShowList.Add(TEXT("="));
+	ShowList.Append(RightExpression);
+
+	return ShowList;
 }
 
 int32 FProblem_Formula::ExpressionEvaluation(const TArray<FString>& Expression)

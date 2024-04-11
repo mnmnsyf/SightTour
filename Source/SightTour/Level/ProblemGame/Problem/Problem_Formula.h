@@ -30,4 +30,6 @@ struct SIGHTTOUR_API FProblem_Formula : public FProblemBase
 
 	/** 等号右边的算式 */
 	TArray<FString> RightExpression;
+
+	bool bInit = false;
 };

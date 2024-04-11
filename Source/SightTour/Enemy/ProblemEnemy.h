@@ -8,6 +8,7 @@
 #include "ProblemEnemy.generated.h"
 
 struct FProblemBase;
+class UWidgetComponent;
 
 /**
  * 
@@ -16,12 +17,12 @@ struct FProblemBase;
 UCLASS()
 class SIGHTTOUR_API AProblemEnemy : public AEnemyCharacter
 {
-	GENERATED_BODY()
+	GENERATED_UCLASS_BODY()
 
 protected:
 	void BeginPlay() override;
 
-
+	void UpdateQuestion(FString AnswerStr);
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (DisplayName = "问题配置", RowType = "/Script/SightTour.ProblemConfig"))
@@ -31,6 +32,9 @@ private:
 	TArray<FInstancedStruct> Problems;
 
 	FInstancedStruct CurrentProblem;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true))
+	TObjectPtr<UWidgetComponent> QuestionWidget;
 
 /*
 	+1 -2 *3 /4   *2
