@@ -6,7 +6,8 @@
 #include "Level/ProblemGame/Problem/Problem_Formula.h"
 #include "InstancedStruct.h"
 #include "Components/WidgetComponent.h"
-
+#include "Kismet/KismetMathLibrary.h"
+#include "UI/Enemy/WG_EnemyProblem.h"
 
 AProblemEnemy::AProblemEnemy(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -33,23 +34,39 @@ void AProblemEnemy::BeginPlay()
 		}
 	}
 
-	UpdateQuestion(FString());
+	FTimerDelegate NextTimer;
+	NextTimer.BindUObject(this, &AProblemEnemy::UpdateQuestion, FString());
+	GetWorldTimerManager().SetTimerForNextTick(NextTimer);
 }
 
 void AProblemEnemy::UpdateQuestion(FString AnswerStr)
 {
+	if (!CurrentProblem.IsValid() && Problems.Num())
+	{
+		int32 ProblemsIndex = UKismetMathLibrary::RandomIntegerInRange(0, Problems.Num() - 1);
+		CurrentProblem = Problems[ProblemsIndex];
+	}
+
 	if (CurrentProblem.IsValid())
 	{
 		if (FProblem_Formula* Problem = CurrentProblem.GetMutablePtr<FProblem_Formula>())
 		{
 			Problem->FillProblem(AnswerStr);
-			if (Problem->CheckAllAnswer())
-			{
-				//Update next problem
-				;
-			}
+			//if (Problem->CheckAllAnswer())
+			//{
+			//	//Update next problem
+			//	;
+			//}
 
-			TArray<FString> ShowList = Problem->GetUIShowList();
+			if (UUserWidget* Widget = QuestionWidget->GetWidget())
+			{
+				if (UWG_EnemyProblem* WG_EnemyProblem = Cast<UWG_EnemyProblem>(Widget))
+				{
+					TArray<FString> ShowList = Problem->GetUIShowList();
+					WG_EnemyProblem->UpdateProblemContext(ShowList);
+					WG_EnemyProblem->SetVisibility(ESlateVisibility::Visible);
+				}
+			}
 		}
 	}
 }

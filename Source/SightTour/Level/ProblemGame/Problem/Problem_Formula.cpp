@@ -5,8 +5,7 @@ void FProblem_Formula::InitProblem()
 {
 	bInit = true;
 
-	TArray<TCHAR> Operator = {'+', '-', '*', '/'};
-
+	static const TArray<TCHAR> Operator = {'+', '-', '*', '/'};
 	//分割等式左右两边
 	bool VisitEquilSign = false;
 	for (int32 i = 0; i < ProblemContent.Len(); ++i)
@@ -21,10 +20,10 @@ void FProblem_Formula::InitProblem()
 			// 处理左边的式子
 			if (!VisitEquilSign)
 			{
-				if (ProblemContent[i] >= '0' && ProblemContent[i] <= '9' || Operator.Find(ProblemContent[i]))
+				if (FChar::IsDigit(ProblemContent[i]) || Operator.Contains(ProblemContent[i]))
 				{
 					FString TempString;
-					while (ProblemContent[i] >= '0' && ProblemContent[i] <= '9' || Operator.Find(ProblemContent[i]))
+					while (i < ProblemContent.Len() && (FChar::IsDigit(ProblemContent[i]) || Operator.Contains(ProblemContent[i])))
 					{
 						TempString.AppendChar(ProblemContent[i]);
 						++i;
@@ -37,7 +36,7 @@ void FProblem_Formula::InitProblem()
 				{
 					do {
 						++i;
-					} while (ProblemContent[i] != SplitChar[0]);
+					} while (i < ProblemContent.Len() && ProblemContent[i] != SplitChar[0]);
 
 					LeftExpression.Push("");
 				}
@@ -45,10 +44,10 @@ void FProblem_Formula::InitProblem()
 			// 处理右边的式子
 			else
 			{
-				if (ProblemContent[i] >= '0' && ProblemContent[i] <= '9' || Operator.Find(ProblemContent[i]))
+				if (FChar::IsDigit(ProblemContent[i]) || Operator.Contains(ProblemContent[i]))
 				{
 					FString TempString;
-					while (ProblemContent[i] >= '0' && ProblemContent[i] <= '9' || Operator.Find(ProblemContent[i]))
+					while (i < ProblemContent.Len() && (FChar::IsDigit(ProblemContent[i]) || Operator.Contains(ProblemContent[i])))
 					{
 						TempString.AppendChar(ProblemContent[i]);
 						++i;
@@ -61,7 +60,7 @@ void FProblem_Formula::InitProblem()
 				{
 					do {
 						++i;
-					} while (ProblemContent[i] != SplitChar[0]);
+					} while (i < ProblemContent.Len() && ProblemContent[i] != SplitChar[0]);
 
 					RightExpression.Push("");
 				}
@@ -148,7 +147,7 @@ int32 FProblem_Formula::ExpressionEvaluation(const TArray<FString>& Expression)
 
 	TArray<TCHAR> OperatorStack;
 	TArray<int32> NumberStack;
-	TMap<TCHAR, int32> m{ {'(',0},{')',0},{'+',1},{'-',1},{'*',2},{'/',2} };
+	TMap<TCHAR, int32> OperatorToPriority{ {'(',0},{')',0},{'+',1},{'-',1},{'*',2},{'/',2} };
 
 	auto Evaluate = [&]() {
 		int32 a = NumberStack.Top();
@@ -191,10 +190,10 @@ int32 FProblem_Formula::ExpressionEvaluation(const TArray<FString>& Expression)
 
 	for (int32 i = 0; i < Str.Len(); ++i)
 	{
-		if (Str[i] >= '0' && Str[i] <= '9')
+		if (FChar::IsDigit(Str[i]))
 		{
 			int32 Num = 0;
-			while (Str[i] >= '0' && Str[i] <= '9')
+			while (i < Str.Len() && FChar::IsDigit(Str[i]))
 			{
 				Num = Num * 10 + Str[i] - '0';
 				++i;
@@ -218,7 +217,7 @@ int32 FProblem_Formula::ExpressionEvaluation(const TArray<FString>& Expression)
 			}
 			else
 			{
-				while (OperatorStack.Num() && m[OperatorStack.Top()] >= m[Str[i]])
+				while (OperatorStack.Num() && OperatorToPriority[OperatorStack.Top()] >= OperatorToPriority[Str[i]])
 				{
 					Evaluate();
 				}

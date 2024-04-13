@@ -6,34 +6,36 @@
 #include "CommonUserWidget.h"
 #include "WG_EnemyProblem.generated.h"
 
+class UWG_ProblemText;
+
 /**
  * 
  */
 UCLASS()
-class SIGHTTOUR_API UWG_EnemyDialogue : public UCommonUserWidget
+class SIGHTTOUR_API UWG_EnemyProblem : public UCommonUserWidget
 {
 	GENERATED_BODY()
 
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	class UCanvasPanel* CanvasPanel;
+	class UCanvasPanel* CP_CanvasPanel;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	class UHorizontalBox* HB_ProblemBox;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	class UImage* I_ProblemBackground;
-
-	/*UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	class UImage* I_AnswerBlank;*/
+	class UHorizontalBox* HB_ProblemTextBox;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	class UTextBlock* T_Dialogue;
+	class UImage* I_ProblemBackground;
 
 public:
 	void UpdateProblemContext(TArray<FString> Context);
 
+private:
+	UWG_ProblemText* LoadProblemText();
+
 protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (Categories = "Problem"))
-	TSoftClassPtr<class UImage> AnswerBlankImageClass;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "Problem", AllowAbstract))
+	TSoftClassPtr<class UWG_ProblemText> ProblemTextClass;
 };

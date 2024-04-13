@@ -5,24 +5,58 @@
 #include "Components/CanvasPanel.h"
 #include "Components/HorizontalBox.h"
 #include "Components/Image.h"
+#include "Components/TextBlock.h"
+#include "WG_ProblemText.h"
+#include "Blueprint/WidgetLayoutLibrary.h"
+#include "Components/CanvasPanelSlot.h"
 
-void UWG_EnemyDialogue::UpdateProblemContext(TArray<FString> Context)
+void UWG_EnemyProblem::UpdateProblemContext(TArray<FString> Context)
 {
-	if (HB_ProblemBox)
+	if (!ensure(HB_ProblemTextBox) || !ensure(HB_ProblemBox) || !ensure(I_ProblemBackground))
 	{
-		HB_ProblemBox->ClearChildren();
+		return;
+	}
+
+	{
+		HB_ProblemTextBox->ClearChildren();
 		for (FString EachStr : Context)
 		{
-			if (EachStr.IsEmpty())
+			UWG_ProblemText* ProblemText = LoadProblemText();
+			if (ProblemText)
 			{
-				UImage* AnswerBlankImage = Cast<UImage>(AnswerBlankImageClass.Get());
-				HB_ProblemBox->AddChild(AnswerBlankImage);
-				//HB_ProblemBox->AddChild();
-			}
-			else
-			{
-				
+				ProblemText->SetText(EachStr);
+				ProblemText->SetVisibility(ESlateVisibility::Visible);
+				HB_ProblemTextBox->AddChildToHorizontalBox(ProblemText);
 			}
 		}
 	}
+	
+	{
+		HB_ProblemTextBox->ForceLayoutPrepass();
+		HB_ProblemBox->ForceLayoutPrepass();
+		FVector2D BackgroundSize;
+		FVector2D ProblemBoxSize;
+		UCanvasPanelSlot* ImageSlot = UWidgetLayoutLibrary::SlotAsCanvasSlot(I_ProblemBackground);
+		if (ImageSlot)
+		{
+			ProblemBoxSize = HB_ProblemBox->GetDesiredSize();
+			BackgroundSize = ImageSlot->GetSize();
+			ImageSlot->SetSize(FVector2D(ProblemBoxSize.X, BackgroundSize.Y));
+		}
+	}
+}
+
+UWG_ProblemText* UWG_EnemyProblem::LoadProblemText()
+{
+	check(!ProblemTextClass.IsNull());
+	TSubclassOf<UWG_ProblemText> WidgetClass = ProblemTextClass.LoadSynchronous();
+
+	if (ensure(WidgetClass && !WidgetClass->HasAnyClassFlags(CLASS_Abstract)))
+	{
+		UWG_ProblemText* NewObject = CreateWidget<UWG_ProblemText>(GetOwningLocalPlayer()->GetPlayerController(GetWorld()), WidgetClass);
+
+		return NewObject;
+	}
+
+	return nullptr;
 }
