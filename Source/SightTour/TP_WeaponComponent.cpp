@@ -48,20 +48,16 @@ void UTP_WeaponComponent::Fire()
 	//打出子弹总伤害
 	else if (UEquipmentManagerComponent* EquipmentManager = OwnerCharacter->GetEquipmentManagerComponent())
 	{
-		TSubclassOf<ADigitalProjectile> ProjectileClass = EquipmentManager->GetProjectileClass();
-		UWorld* const World = GetWorld();
-		if (World != nullptr && ProjectileClass != nullptr)
+		AFillBall* FillBall = EquipmentManager->DiscardFillBall(FillBallType);
+		if (FillBall)
 		{
-			FActorSpawnParameters SpawnInfo;
-			SpawnInfo.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-			ADigitalProjectile* Projectile = World->SpawnActor<ADigitalProjectile>(ProjectileClass, GetMuzzelLocation(), GetMuzzelRotation(), SpawnInfo);
-			if (Projectile != nullptr)
+			FillBall->EnableBall(true);
+			FillBall->SetActorLocation(GetMuzzelLocation());
+			FillBall->SetActorRotation(GetMuzzelRotation());
+			if (IAttractInterface* AttractInterface = Cast<IAttractInterface>(FillBall))
 			{
-				if (IAttractInterface* AttractInterface = Cast<IAttractInterface>(Projectile))
-				{
-					AttractInterface->Spawn(this);
-					bFiring = true;
-				}
+				AttractInterface->Spawn(this);
+				bFiring = true;
 			}
 		}
 	}
@@ -124,6 +120,11 @@ void UTP_WeaponComponent::Attract()
 			bAttract = true;
 		}
 	}
+}
+
+ASightTourCharacter* UTP_WeaponComponent::GetOwnerCharacter()
+{
+	return OwnerCharacter;
 }
 
 void UTP_WeaponComponent::AttachWeapon(ASightTourCharacter* TargetCharacter)

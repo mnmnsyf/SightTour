@@ -36,15 +36,14 @@ public:
 
 	FRotator GetMuzzelRotation() const { return GetSocketRotation(AttractSocket); }
 
+	ASightTourCharacter* GetOwnerCharacter();
+
 protected:
 	/** Ends gameplay for this component. */
 	UFUNCTION()
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon | Projectile")
-	EWeaponType WeaponType = EWeaponType::None;
-
 	/** Sound to play each time we fire */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon | Gameplay")
 	USoundBase* FireSound;
@@ -98,4 +97,8 @@ protected:
 
 	UPROPERTY()
 	AActor* AttactActor = nullptr;
+
+	//TODO
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon | Ball", meta = (AllowPrivateAccess = "true"))
+	FName FillBallType = FName("AddBall");
 };

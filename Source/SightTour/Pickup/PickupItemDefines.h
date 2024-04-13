@@ -4,22 +4,100 @@
 
 #include "EngineMinimal.h"
 #include "Engine/DataTable.h"
-#include "Engine/DataAsset.h"
 #include "PickupItemDefines.generated.h"
 
-class UNiagaraSystem;
-class UObject;
-class USoundBase;
-class UStaticMesh;
+struct FInstancedStruct;
+class APickupItemBase;
 
-UENUM(BlueprintType)
-enum class EWeaponType : uint8
+USTRUCT(BlueprintType)
+struct FPickableConfig : public FTableRowBase
 {
-	None = 0 UMETA(Hidden),
-	AdditionGun UMETA(DisplayName = "加法枪"),
-	SubtractionGun UMETA(DisplayName = "减法枪"),
-	MultiplicationGun UMETA(DisplayName = "乘法枪"),
-	DivisionGun UMETA(DisplayName = "除法枪"),
-	MagicGun UMETA(DisplayName = "魔法枪"),
-	MAX
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, DisplayName = "问题", Meta = (ExcludeBaseStruct, BaseStruct = "/Script/SightTour.PickableItem"))
+	TArray<FInstancedStruct> PickableItem;
+};
+
+USTRUCT(meta = (Hidden))
+struct FPickableItem
+{
+	GENERATED_BODY()
+
+	virtual ~FPickableItem() {}
+	
+	bool operator==(const FPickableItem& A) const
+	{
+		return this->ItemTypeName == A.ItemTypeName;
+	}
+
+	FName ItemTypeName;
+};
+
+USTRUCT(meta = (Hidden))
+struct FFillBallBase : public FPickableItem
+{
+	GENERATED_BODY()
+
+	virtual void ChangeValue(FString NewValue) {}
+
+	virtual void Reset() {}
+
+	virtual FString GetActualValue() { return FString(); }
+};
+
+USTRUCT(BlueprintType)
+struct FAddOrSubBall : public FFillBallBase
+{
+	GENERATED_BODY()
+
+	FAddOrSubBall();
+	
+	virtual void ChangeValue(FString NewValue) override;
+
+	virtual void Reset() override;
+
+	virtual FString GetActualValue() override;
+
+private:
+	UPROPERTY(EditAnywhere)
+	int32 Value = 0;
+};
+
+USTRUCT(BlueprintType)
+struct FMultiOrDivBall : public FFillBallBase
+{
+	GENERATED_BODY()
+
+	FMultiOrDivBall();
+
+	virtual void ChangeValue(FString NewValue) override;
+
+	virtual void Reset() override;
+
+	virtual FString GetActualValue() override;
+
+private:
+	UPROPERTY(EditAnywhere)
+	int32 Value = 0;
+
+	UPROPERTY(EditAnywhere)
+	bool bIsMulti = true;
+};
+
+USTRUCT(BlueprintType)
+struct FTextBall : public FFillBallBase
+{
+	GENERATED_BODY()
+
+	FTextBall();
+
+	virtual void ChangeValue(FString NewValue) override;
+
+	virtual void Reset() override;
+
+	virtual FString GetActualValue() override;
+
+private:
+	UPROPERTY(EditAnywhere)
+	FString Value;
 };

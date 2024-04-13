@@ -21,7 +21,14 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+public:
+	virtual void OnEquipped() {};
+	virtual void OnUnequipped() {};
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+private:
+	
 };

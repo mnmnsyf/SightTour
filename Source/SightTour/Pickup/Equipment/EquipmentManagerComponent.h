@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "../Projectile/DigitalProjectile.h"
+#include "../FillBall/FillBall.h"
 #include "EquipmentManagerComponent.generated.h"
 
 class UObject;
@@ -19,40 +19,29 @@ class SIGHTTOUR_API UEquipmentManagerComponent : public UActorComponent
 	GENERATED_BODY()
 
 public:	
-	// Sets default values for this component's properties
 	UEquipmentManagerComponent();
 
-protected:
-	// Called when the game starts
 	virtual void BeginPlay() override;
 
 public:
-	FORCEINLINE UTP_WeaponComponent* GetCurrentEquippedWeapon() const { return CurrentEquippedWeapon; }
+	static UEquipmentManagerComponent* Get(AActor* Owner);
 
-	FORCEINLINE TSubclassOf<ADigitalProjectile> GetProjectileClass() const { return HasBullet ? DigitalProjectileClass : nullptr; }
+	FORCEINLINE UTP_WeaponComponent* GetCurrentEquippedWeapon() const { return EquippedWeapon; }
 
-	FORCEINLINE float GetDigitalProjectileValue() const { return DigitalProjectileValue; }
 
-	void UpdateDigitalProjectileValue(const float UpdateValue);
+	FORCEINLINE void EquipWeapon(UTP_WeaponComponent* InEquippedWeapon) { EquippedWeapon = InEquippedWeapon; };
 
-	void EquipWeapon(UTP_WeaponComponent* InEquippedWeapon);
-		
-protected:
-	//数字子弹总伤害
-	float DigitalProjectileValue = 1.0f;
+	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
+	void PickupFillBall(AFillBall* Ball);
 
-	//是否有子弹
-	bool HasBullet = false;
+	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
+	AFillBall* DiscardFillBall(FName BallType);
 
-	//打出的子弹
-	UPROPERTY(EditDefaultsOnly, Category = "Weapon | Projectile")
-	TSubclassOf<ADigitalProjectile> DigitalProjectileClass;
-
-	//持有的枪械
-	UPROPERTY()
-	TArray<UTP_WeaponComponent*> EquippedWeapons;
-
+private:
 	//现在手持的枪械
 	UPROPERTY()
-	UTP_WeaponComponent* CurrentEquippedWeapon = nullptr;
+	UTP_WeaponComponent* EquippedWeapon = nullptr;
+
+	UPROPERTY()
+	TArray<TObjectPtr<AFillBall>> BallList;
 };

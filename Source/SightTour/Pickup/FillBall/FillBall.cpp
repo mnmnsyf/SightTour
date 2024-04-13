@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "DigitalProjectile.h"
+#include "FillBall.h"
 #include "TP_WeaponComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -9,10 +9,9 @@
 #include "Components/SphereComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "SightTourCharacter.h"
-#include "DigitalProjectileDefines.h"
-#include "../Equipment/EquipmentManagerComponent.h"
+#include "Equipment/EquipmentManagerComponent.h"
 
-ADigitalProjectile::ADigitalProjectile()
+AFillBall::AFillBall()
 {
 	ProjectileMesh = CreateDefaultSubobject<UStaticMeshComponent>("ProjectileMesh");
 	ProjectileMesh->SetupAttachment(RootComponent);
@@ -21,7 +20,7 @@ ADigitalProjectile::ADigitalProjectile()
 	CollisionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComp"));
 	CollisionSphere->InitSphereRadius(5.0f);
 	CollisionSphere->BodyInstance.SetCollisionProfileName("Projectile");
-	CollisionSphere->OnComponentHit.AddDynamic(this, &ADigitalProjectile::OnHit);		// set up a notification for when this component hits something blocking
+	CollisionSphere->OnComponentHit.AddDynamic(this, &AFillBall::OnHit);		// set up a notification for when this component hits something blocking
 
 	// Players can't walk on it
 	CollisionSphere->SetWalkableSlopeOverride(FWalkableSlopeOverride(WalkableSlope_Unwalkable, 0.f));
@@ -31,24 +30,35 @@ ADigitalProjectile::ADigitalProjectile()
 	//InitialLifeSpan = 3.0f;
 }
 
-void ADigitalProjectile::Tick(float DeltaTime)
+void AFillBall::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (bMoving)
+	if (bAttacting)
 	{
 		PerMove();
 	}
 }
 
-void ADigitalProjectile::BeginPlay()
+void AFillBall::BeginPlay()
 {
 	Super::BeginPlay();
 
+	EnableBall(true);
+
 	bOpenPhysicSimulate = ProjectileMesh->IsSimulatingPhysics();
+
+	//数字小球配置
+	if (!BallConfig.IsNull())
+	{
+		if (FFillBallBase* Config = BallConfig.GetRow<FFillBallBase>(TEXT("Get Digital Projectile Config")))
+		{
+			SetFillBallConfig(*Config);
+		}
+	}
 }
 
-void ADigitalProjectile::Attract(class UTP_WeaponComponent* WeaponComp)
+void AFillBall::Attract(class UTP_WeaponComponent* WeaponComp)
 {
 	check(WeaponComp);
 
@@ -60,11 +70,11 @@ void ADigitalProjectile::Attract(class UTP_WeaponComponent* WeaponComp)
 	float Distance = FVector::Dist(OwnerWeapon->GetMuzzelLocation(), GetActorLocation());
 	if (Distance > 0)
 	{
-		bMoving = true;
+		bAttacting = true;
 	}
 }
 
-void ADigitalProjectile::Spawn(class UTP_WeaponComponent* WeaponComp)
+void AFillBall::Spawn(class UTP_WeaponComponent* WeaponComp)
 {
 	if (!WeaponComp || !ProjectileMesh)
 	{
@@ -102,30 +112,22 @@ void ADigitalProjectile::Spawn(class UTP_WeaponComponent* WeaponComp)
 	}
 }
 
-void ADigitalProjectile::OnEquipped()
+void AFillBall::OnEquipped()
 {
-	if (OwnerWeapon == nullptr || !OwnerWeapon->GetOwner() || BallConfig.IsNull())
+	if (ensure(!OwnerWeapon || !OwnerWeapon->GetOwnerCharacter()))
 	{
 		return;
 	}
-	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-	if (ASightTourCharacter* SightTourCharacter = Cast<ASightTourCharacter>(Player))
-	{
-		FDigitalProjectileConfig* DigitalProjectileConfig = BallConfig.GetRow<FDigitalProjectileConfig>(TEXT("Get Digital Projectile Config"));
-		if (DigitalProjectileConfig == nullptr)
-		{
-			FMessageDialog::Open(EAppMsgType::Ok, FText::FromString(TEXT("未找到对应的子弹配置，请优先修改！")));
-		}
 
-		/*UEquipmentManagerComponent* EquipmentManagerComponent = SightTourCharacter->FindComponentByClass<UEquipmentManagerComponent>();
-		if (EquipmentManagerComponent)
-		{
-			EquipmentManagerComponent->UpdateDigitalProjectileValue(DigitalProjectileConfig->BallNumber);
-		}*/
+	UEquipmentManagerComponent* EquipmentManagerComponent = UEquipmentManagerComponent::Get(OwnerWeapon->GetOwnerCharacter());
+	if (ensure(EquipmentManagerComponent))
+	{
+		EquipmentManagerComponent->PickupFillBall(this);
+		EnableBall(false);
 	}
 }
 
-bool ADigitalProjectile::GeSpawnDirection(FVector& OutHitLocation)
+bool AFillBall::GeSpawnDirection(FVector& OutHitLocation)
 {
 	if (!OwnerWeapon)
 	{
@@ -152,7 +154,7 @@ bool ADigitalProjectile::GeSpawnDirection(FVector& OutHitLocation)
 	return false;
 }
 
-bool ADigitalProjectile::TraceUnderCrosshair(FVector& OutHitLocation)
+bool AFillBall::TraceUnderCrosshair(FVector& OutHitLocation)
 {
 	FVector2D ViewportSize;
 	if (GEngine && GEngine->GameViewport)
@@ -187,7 +189,7 @@ bool ADigitalProjectile::TraceUnderCrosshair(FVector& OutHitLocation)
 	return false;
 }
 
-void ADigitalProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+void AFillBall::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	// Only add impulse and destroy projectile if we hit a physics
 	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && OtherComp->IsSimulatingPhysics())
@@ -200,7 +202,17 @@ void ADigitalProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor,
 	}
 }
 
-void ADigitalProjectile::PerMove()
+void AFillBall::SetFillBallConfig(FFillBallBase& NewConfig)
+{
+	FillBallConfig = NewConfig;
+}
+
+void AFillBall::EnableBall(bool bEnable)
+{
+	this->SetActorHiddenInGame(bEnable);
+}
+
+void AFillBall::PerMove()
 {
 	FVector DirectionVector = UKismetMathLibrary::FindLookAtRotation(this->GetActorLocation(), OwnerWeapon->GetMuzzelLocation()).Vector();
 
@@ -208,9 +220,8 @@ void ADigitalProjectile::PerMove()
 
 	if (GetActorLocation().Equals(OwnerWeapon->GetMuzzelLocation(), 50.f))
 	{
-		bMoving = false;
+		bAttacting = false;
 
 		OnEquipped();
-		Destroy();
 	}
 }

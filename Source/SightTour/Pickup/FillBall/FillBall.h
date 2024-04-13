@@ -6,7 +6,8 @@
 #include "Pickup/PickupItemBase.h"
 #include "Interface/AttractInterface.h"
 #include "Engine/DataTable.h"
-#include "DigitalProjectile.generated.h"
+#include "PickupItemDefines.h"
+#include "FillBall.generated.h"
 
 class UTP_WeaponComponent;
 class UStaticMeshComponent;
@@ -14,15 +15,15 @@ class UProjectileMovementComponent;
 class USphereComponent;
 
 /**
- * 数字子弹
+ * 数字小球
  */
 UCLASS()
-class SIGHTTOUR_API ADigitalProjectile : public APickupItemBase, public IAttractInterface
+class SIGHTTOUR_API AFillBall : public APickupItemBase, public IAttractInterface
 {
 	GENERATED_BODY()
 	
 public:
-	ADigitalProjectile();
+	AFillBall();
 
 	void Tick(float DeltaTime) override;
 
@@ -36,6 +37,7 @@ public:
 
 	void OnEquipped() override;
 
+
 	//获取枪口发射命中位置
 	bool GeSpawnDirection(FVector& OutHitDirection);
 
@@ -44,6 +46,11 @@ public:
 
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+
+	void SetFillBallConfig(FFillBallBase& NewConfig);
+
+	//是否开启小球碰撞 物理和可视性
+	void EnableBall(bool bEnable);
 
 protected:
 	void PerMove();
@@ -64,16 +71,22 @@ protected:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = Projectile, meta = (DisplayName = "发射力度"))
 	float ForceValue = 50.f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (DisplayName = "小球配置", RowType = "/Script/SightTour.DigitalProjectileConfig"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (DisplayName = "小球配置", RowType = "/Script/SightTour.PickableConfig"))
 	FDataTableRowHandle BallConfig;
+
+public:
+	//数字小球配置
+	FFillBallBase FillBallConfig;
 
 private:
 	UPROPERTY()
 	UTP_WeaponComponent* OwnerWeapon = nullptr;
 
+	//初始是否开启模拟物理
 	bool bOpenPhysicSimulate = false;
 
-	bool bMoving = false;
+	//是否被吸取中
+	bool bAttacting = false;
 
 	friend class UTP_WeaponComponent;
 };

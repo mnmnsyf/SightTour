@@ -8,7 +8,6 @@
 
 struct FInstancedStruct;
 
-
 USTRUCT(BlueprintType)
 struct FProblemConfig : public FTableRowBase
 {
