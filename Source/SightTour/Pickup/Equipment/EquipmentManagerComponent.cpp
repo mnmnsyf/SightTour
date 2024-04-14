@@ -22,27 +22,41 @@ UEquipmentManagerComponent* UEquipmentManagerComponent::Get(AActor* Owner)
 
 void UEquipmentManagerComponent::PickupFillBall(AFillBall* Ball)
 {
-	for (AFillBall* EachBall : BallList)
+	FFillBallBase* TempFillBall = Ball->FillBallConfig.GetMutablePtr<FFillBallBase>();
+	if (TempFillBall)
 	{
-		if (EachBall->FillBallConfig == Ball->FillBallConfig)
+		for (FInstancedStruct EachBall : BallList)
 		{
-			EachBall->FillBallConfig.ChangeValue(Ball->FillBallConfig.GetActualValue());
-			Ball->Destroy();
-			return;
+			FFillBallBase* EachBallConfig = EachBall.GetMutablePtr<FFillBallBase>();
+			if (EachBallConfig)
+			{
+				if (EachBallConfig->ItemTypeName == TempFillBall->ItemTypeName)
+				{
+					EachBallConfig->ChangeValue(TempFillBall->GetActualValue());
+					Ball->Destroy();
+					return;
+				}
+			}
 		}
+		BallList.Emplace(Ball->FillBallConfig);
+		Ball->Destroy();
 	}
-
-	BallList.Emplace(Ball);
 }
 
-AFillBall* UEquipmentManagerComponent::DiscardFillBall(FName BallType)
+FInstancedStruct UEquipmentManagerComponent::DiscardFillBall(FName BallType)
 {
-	for (AFillBall* EachBall : BallList)
+	FInstancedStruct ReturnBallConfig;
+
+	for (auto It = BallList.CreateIterator(); It; ++It)
 	{
-		if (EachBall->FillBallConfig.ItemTypeName == BallType)
+		FFillBallBase* EachBallConfig = It->GetMutablePtr<FFillBallBase>();
+		if (EachBallConfig && EachBallConfig->ItemTypeName == BallType)
 		{
-			return EachBall;
+			ReturnBallConfig = *It;
+			It.RemoveCurrent();
+			break;
 		}
 	}
-	return nullptr;
+
+	return ReturnBallConfig;
 }

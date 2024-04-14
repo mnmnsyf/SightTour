@@ -9,6 +9,7 @@
 #include "TP_WeaponComponent.generated.h"
 
 class ASightTourCharacter;
+class AProjectile;
 
 UCLASS(Blueprintable, BlueprintType, ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class SIGHTTOUR_API UTP_WeaponComponent : public USkeletalMeshComponent
@@ -19,6 +20,7 @@ public:
 	/** Sets default values for this component's properties */
 	UTP_WeaponComponent();
 
+public:
 	/** Attaches the actor to a FirstPersonCharacter */
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
 	void AttachWeapon(ASightTourCharacter* TargetCharacter);
@@ -30,13 +32,17 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
 	void Attract();
 
+	/** Muzzel */
 	FName GetMuzzelScoketName() const { return AttractSocket; }
 
 	FVector GetMuzzelLocation() const { return GetSocketLocation(AttractSocket); }
 
 	FRotator GetMuzzelRotation() const { return GetSocketRotation(AttractSocket); }
 
+	/** Gameplay */
 	ASightTourCharacter* GetOwnerCharacter();
+
+	APlayerController* GetPlayerController();
 
 protected:
 	/** Ends gameplay for this component. */
@@ -67,6 +73,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon | Input", meta = (AllowPrivateAccess = "true"))
 	class UInputAction* AttractAction;
 
+	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = true))
+	TSubclassOf<AFillBall> BallClass = nullptr;
+
 
 public:
 	/** 武器十字准星纹理 */
@@ -91,12 +100,13 @@ public:
 protected:
 	/** The Character holding this weapon*/
 	UPROPERTY()
-	ASightTourCharacter* OwnerCharacter;
+	TObjectPtr<ASightTourCharacter> OwnerCharacter = nullptr;
 
-	bool bAttract = false;
+	//枪口是否有吸附小球
+	bool bAttractProjectile = false;
 
 	UPROPERTY()
-	AActor* AttactActor = nullptr;
+	TObjectPtr<AProjectile> AttactProjectile = nullptr;
 
 	//TODO
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon | Ball", meta = (AllowPrivateAccess = "true"))

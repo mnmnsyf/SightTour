@@ -2,12 +2,12 @@
 
 
 #include "FillBall.h"
-#include "TP_WeaponComponent.h"
 #include "Components/StaticMeshComponent.h"
-#include "Kismet/KismetMathLibrary.h"
-#include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/SphereComponent.h"
+#include "GameFramework/ProjectileMovementComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Kismet/GameplayStatics.h"
+#include "TP_WeaponComponent.h"
 #include "SightTourCharacter.h"
 #include "Equipment/EquipmentManagerComponent.h"
 
@@ -44,16 +44,20 @@ void AFillBall::BeginPlay()
 {
 	Super::BeginPlay();
 
-	EnableBall(true);
+	//SetActorHiddenInGame(false);
 
 	bOpenPhysicSimulate = ProjectileMesh->IsSimulatingPhysics();
 
 	//数字小球配置
-	if (!BallConfig.IsNull())
+	if (!BallConfigRowHandle.IsNull())
 	{
-		if (FFillBallBase* Config = BallConfig.GetRow<FFillBallBase>(TEXT("Get Digital Projectile Config")))
+		if (FPickableConfig* Config = BallConfigRowHandle.GetRow<FPickableConfig>(TEXT("Get Digital Projectile Config")))
 		{
-			SetFillBallConfig(*Config);
+			if (FFillBallBase* BallConfig = Config->PickableItem.GetMutablePtr<FFillBallBase>())
+			{
+				BallConfig->Init();
+				FillBallConfig = Config->PickableItem;
+			}
 		}
 	}
 }
@@ -63,10 +67,7 @@ void AFillBall::Attract(class UTP_WeaponComponent* WeaponComp)
 	check(WeaponComp);
 
 	OwnerWeapon = WeaponComp;
-	if (bOpenPhysicSimulate)
-	{
-		ProjectileMesh->SetSimulatePhysics(false);
-	}
+	ProjectileMesh->SetSimulatePhysics(false);
 	float Distance = FVector::Dist(OwnerWeapon->GetMuzzelLocation(), GetActorLocation());
 	if (Distance > 0)
 	{
@@ -76,21 +77,24 @@ void AFillBall::Attract(class UTP_WeaponComponent* WeaponComp)
 
 void AFillBall::Spawn(class UTP_WeaponComponent* WeaponComp)
 {
-	if (!WeaponComp || !ProjectileMesh)
-	{
-		return;
-	}
+	check(WeaponComp);
+	check(ProjectileMesh);
 
-	if (bOpenPhysicSimulate)
-	{
-		ProjectileMesh->SetSimulatePhysics(true);
-	}
+	APlayerController* PlayerController = WeaponComp->GetPlayerController();
+	check(PlayerController);
 
-	if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0))
+	ASightTourCharacter* OwnerCharacter = WeaponComp->GetOwnerCharacter();
+	check(OwnerCharacter);
+
+	//显示小球
+	//SetActorHiddenInGame(false);
+
+	SetActorLocation(WeaponComp->GetMuzzelLocation());
+	SetActorRotation(WeaponComp->GetMuzzelRotation());
+
+	//计算发射轨迹
 	{
 		FVector MuzzleLocation = WeaponComp->GetMuzzelLocation();
-
-		//发射子弹的方向
 		FRotator SpawnRotation = WeaponComp->GetMuzzelRotation();
 		FVector FireHitLocation;
 
@@ -100,30 +104,26 @@ void AFillBall::Spawn(class UTP_WeaponComponent* WeaponComp)
 		}
 		else
 		{
-			ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-			if (ASightTourCharacter* SightTourCharacter = Cast<ASightTourCharacter>(Player))
-			{
-				FVector CameraDirection = SightTourCharacter->GetCameraTransform().Rotator().Vector() * 100'000.0f;
-				SpawnRotation = UKismetMathLibrary::FindLookAtRotation(MuzzleLocation, CameraDirection);
-			}
+			FVector CameraDirection = OwnerCharacter->GetCameraTransform().Rotator().Vector() * 100'000.0f;
+			SpawnRotation = UKismetMathLibrary::FindLookAtRotation(MuzzleLocation, CameraDirection);
 		}
 
+		//开启模拟物理
+		ProjectileMesh->SetSimulatePhysics(true);
 		ProjectileMesh->AddImpulse(SpawnRotation.Vector() * ForceValue);
 	}
 }
 
 void AFillBall::OnEquipped()
 {
-	if (ensure(!OwnerWeapon || !OwnerWeapon->GetOwnerCharacter()))
-	{
-		return;
-	}
+	check(OwnerWeapon);
 
 	UEquipmentManagerComponent* EquipmentManagerComponent = UEquipmentManagerComponent::Get(OwnerWeapon->GetOwnerCharacter());
 	if (ensure(EquipmentManagerComponent))
 	{
 		EquipmentManagerComponent->PickupFillBall(this);
-		EnableBall(false);
+		//SetActorHiddenInGame(true);
+		SetActorLocation(FVector(10.f, 10.f, 600.f));
 	}
 }
 
@@ -192,24 +192,18 @@ bool AFillBall::TraceUnderCrosshair(FVector& OutHitLocation)
 void AFillBall::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	// Only add impulse and destroy projectile if we hit a physics
-	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && OtherComp->IsSimulatingPhysics())
+	if (!OtherActor || OtherActor == this)
 	{
-		OtherComp->AddImpulseAtLocation(GetVelocity() * 100.0f, GetActorLocation());
-
-		GEngine->AddOnScreenDebugMessage(-1, 1500.0f, FColor::Red, TEXT("Projectile hit"));
-
-		Destroy();
+		return;
 	}
-}
+	if (!OtherComp || OtherComp->IsSimulatingPhysics() || Cast<UTP_WeaponComponent>(OtherComp))
+	{
+		return;
+	}
 
-void AFillBall::SetFillBallConfig(FFillBallBase& NewConfig)
-{
-	FillBallConfig = NewConfig;
-}
+	OtherComp->AddImpulseAtLocation(GetVelocity() * 100.0f, GetActorLocation());
 
-void AFillBall::EnableBall(bool bEnable)
-{
-	this->SetActorHiddenInGame(bEnable);
+	GEngine->AddOnScreenDebugMessage(-1, 1500.0f, FColor::Red, TEXT("Projectile hit"));
 }
 
 void AFillBall::PerMove()

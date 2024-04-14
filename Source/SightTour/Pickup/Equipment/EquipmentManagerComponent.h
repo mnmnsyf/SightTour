@@ -35,7 +35,7 @@ public:
 	void PickupFillBall(AFillBall* Ball);
 
 	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
-	AFillBall* DiscardFillBall(FName BallType);
+	FInstancedStruct DiscardFillBall(FName BallType);
 
 private:
 	//现在手持的枪械
@@ -43,5 +43,5 @@ private:
 	UTP_WeaponComponent* EquippedWeapon = nullptr;
 
 	UPROPERTY()
-	TArray<TObjectPtr<AFillBall>> BallList;
+	TArray<FInstancedStruct> BallList;
 };

@@ -34,7 +34,7 @@ private:
 	FInstancedStruct CurrentProblem;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true))
-	TObjectPtr<UWidgetComponent> QuestionWidget;
+	TObjectPtr<UWidgetComponent> QuestionWidget = nullptr;
 
 /*
 	+1 -2 *3 /4   *2

@@ -47,11 +47,6 @@ public:
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
-	void SetFillBallConfig(FFillBallBase& NewConfig);
-
-	//是否开启小球碰撞 物理和可视性
-	void EnableBall(bool bEnable);
-
 protected:
 	void PerMove();
 
@@ -69,18 +64,18 @@ protected:
 	float DistanceThreshold = 50.f;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = Projectile, meta = (DisplayName = "发射力度"))
-	float ForceValue = 50.f;
+	float ForceValue = 25000.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (DisplayName = "小球配置", RowType = "/Script/SightTour.PickableConfig"))
-	FDataTableRowHandle BallConfig;
+	FDataTableRowHandle BallConfigRowHandle;
 
 public:
 	//数字小球配置
-	FFillBallBase FillBallConfig;
+	FInstancedStruct FillBallConfig;
 
 private:
 	UPROPERTY()
-	UTP_WeaponComponent* OwnerWeapon = nullptr;
+	TObjectPtr<UTP_WeaponComponent> OwnerWeapon = nullptr;
 
 	//初始是否开启模拟物理
 	bool bOpenPhysicSimulate = false;

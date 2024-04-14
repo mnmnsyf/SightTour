@@ -2,7 +2,7 @@
 
 #include "PickupItemDefines.h"
 
-FAddOrSubBall::FAddOrSubBall()
+void FAddOrSubBall::Init()
 {
 	ItemTypeName = (Value > 0) ? FName("AddBall") : FName("SubBall");
 }
@@ -14,17 +14,12 @@ void FAddOrSubBall::ChangeValue(FString NewValue)
 	Value += NewValueNumber;
 }
 
-void FAddOrSubBall::Reset()
-{
-	Value = 0;
-}
-
 FString FAddOrSubBall::GetActualValue()
 {
 	return (Value > 0) ? FString::Printf(TEXT("+%d"), Value) : FString::Printf(TEXT("-%d"), Value);
 }
 
-FMultiOrDivBall::FMultiOrDivBall()
+void FMultiOrDivBall::Init()
 {
 	ItemTypeName = bIsMulti ? FName("MultiBall") : FName("DivBall");
 }
@@ -34,17 +29,12 @@ void FMultiOrDivBall::ChangeValue(FString NewValue)
 	Value = FCString::Atoi(*NewValue);
 }
 
-void FMultiOrDivBall::Reset()
-{
-	Value = 0;
-}
-
 FString FMultiOrDivBall::GetActualValue()
 {
 	return bIsMulti ? FString::Printf(TEXT("*%d"), Value) : FString::Printf(TEXT("/%d"), Value);
 }
 
-FTextBall::FTextBall()
+void FTextBall::Init()
 {
 	ItemTypeName = FName("TextBall");
 }
@@ -52,11 +42,6 @@ FTextBall::FTextBall()
 void FTextBall::ChangeValue(FString NewValue)
 {
 	Value = NewValue;
-}
-
-void FTextBall::Reset()
-{
-	Value = FString("");
 }
 
 FString FTextBall::GetActualValue()

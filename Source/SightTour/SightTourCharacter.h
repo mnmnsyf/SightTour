@@ -47,7 +47,7 @@ public:
 	
 	UEquipmentManagerComponent* GetEquipmentManagerComponent() const { return EquipmentManagerComponent; }
 
-private:
+public:
 	APlayerController* GetPlayerController();
 
 protected:

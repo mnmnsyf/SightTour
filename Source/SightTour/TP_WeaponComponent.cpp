@@ -29,52 +29,50 @@ void UTP_WeaponComponent::Fire()
 		return;
 	}
 
-	bool bFiring = false;
+	bool bCanFire = false;
 
 	// 打出小球
-	if (AttactActor != nullptr)
+	if (AttactProjectile)
 	{
 		APlayerController* PlayerController = Cast<APlayerController>(OwnerCharacter->GetController());
 		const FRotator SpawnRotation = PlayerController->PlayerCameraManager->GetCameraRotation();
-		const FVector SpawnLocation = AttactActor->GetActorLocation();
 
-		if (IAttractInterface* AttractInterface = Cast<IAttractInterface>(AttactActor))
+		if (IAttractInterface* AttractInterface = Cast<IAttractInterface>(AttactProjectile))
 		{
 			AttractInterface->Spawn(this);
-			AttactActor = nullptr;
-			bFiring = true;
+			AttactProjectile = nullptr;
+			bAttractProjectile = false;
+			bCanFire = true;
 		}
 	}
 	//打出子弹总伤害
 	else if (UEquipmentManagerComponent* EquipmentManager = OwnerCharacter->GetEquipmentManagerComponent())
 	{
-		AFillBall* FillBall = EquipmentManager->DiscardFillBall(FillBallType);
-		if (FillBall)
+		FInstancedStruct TempFillBallConfig = EquipmentManager->DiscardFillBall(FillBallType);
+		if (TempFillBallConfig.IsValid())
 		{
-			FillBall->EnableBall(true);
-			FillBall->SetActorLocation(GetMuzzelLocation());
-			FillBall->SetActorRotation(GetMuzzelRotation());
-			if (IAttractInterface* AttractInterface = Cast<IAttractInterface>(FillBall))
+			FActorSpawnParameters SpawnParams;
+			SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+			AFillBall* NewFillBall = GetWorld()->SpawnActor<AFillBall>(BallClass, FTransform(), SpawnParams);
+			NewFillBall->FillBallConfig = TempFillBallConfig;
+			if (IAttractInterface* AttractInterface = Cast<IAttractInterface>(NewFillBall))
 			{
 				AttractInterface->Spawn(this);
-				bFiring = true;
+				bCanFire = true;
 			}
 		}
 	}
 
 	//播放音效和动画
-	if (bFiring)
+	if (bCanFire)
 	{
-		// Try and play the sound if specified
 		if (FireSound != nullptr)
 		{
 			UGameplayStatics::PlaySoundAtLocation(this, FireSound, OwnerCharacter->GetActorLocation());
 		}
 
-		// Try and play a firing animation if specified
 		if (FireAnimation != nullptr)
 		{
-			// Get the animation object for the arms mesh
 			UAnimInstance* AnimInstance = OwnerCharacter->GetMesh1P()->GetAnimInstance();
 			if (AnimInstance != nullptr)
 			{
@@ -86,10 +84,13 @@ void UTP_WeaponComponent::Fire()
 
 void UTP_WeaponComponent::Attract()
 {
-	if (bAttract && OwnerCharacter == nullptr || OwnerCharacter->GetController() == nullptr)
+	check(OwnerCharacter);
+
+	if (bAttractProjectile)
 	{
 		return;
 	}
+
 	FTransform CamerTrans = OwnerCharacter->GetCameraTransform();
 
 	FVector TraceStartLoc = CamerTrans.GetLocation();
@@ -116,8 +117,12 @@ void UTP_WeaponComponent::Attract()
 		if (IAttractInterface* AttractInterface = Cast<IAttractInterface>(OutHit.GetActor()))
 		{
 			AttractInterface->Attract(this);
-			AttactActor = OutHit.GetActor();
-			bAttract = true;
+
+			if (AProjectile* Projectile = Cast<AProjectile>(OutHit.GetActor()))
+			{
+				AttactProjectile = Projectile;
+				bAttractProjectile = true;
+			}
 		}
 	}
 }
@@ -127,13 +132,18 @@ ASightTourCharacter* UTP_WeaponComponent::GetOwnerCharacter()
 	return OwnerCharacter;
 }
 
+APlayerController* UTP_WeaponComponent::GetPlayerController()
+{
+	check(OwnerCharacter);
+
+	return OwnerCharacter->GetPlayerController();
+}
+
 void UTP_WeaponComponent::AttachWeapon(ASightTourCharacter* TargetCharacter)
 {
+	check(TargetCharacter);
+
 	OwnerCharacter = TargetCharacter;
-	if (OwnerCharacter == nullptr)
-	{
-		return;
-	}
 
 	// Attach the weapon to the First Person Character
 	FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, true);

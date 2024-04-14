@@ -4,9 +4,9 @@
 
 #include "EngineMinimal.h"
 #include "Engine/DataTable.h"
+#include "InstancedStruct.h"
 #include "PickupItemDefines.generated.h"
 
-struct FInstancedStruct;
 class APickupItemBase;
 
 USTRUCT(BlueprintType)
@@ -14,8 +14,8 @@ struct FPickableConfig : public FTableRowBase
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere, DisplayName = "问题", Meta = (ExcludeBaseStruct, BaseStruct = "/Script/SightTour.PickableItem"))
-	TArray<FInstancedStruct> PickableItem;
+	UPROPERTY(EditAnywhere, DisplayName = "Item", Meta = (ExcludeBaseStruct, BaseStruct = "/Script/SightTour.PickableItem"))
+	FInstancedStruct PickableItem;
 };
 
 USTRUCT(meta = (Hidden))
@@ -24,6 +24,8 @@ struct FPickableItem
 	GENERATED_BODY()
 
 	virtual ~FPickableItem() {}
+
+	virtual void Init() {}
 	
 	bool operator==(const FPickableItem& A) const
 	{
@@ -40,9 +42,14 @@ struct FFillBallBase : public FPickableItem
 
 	virtual void ChangeValue(FString NewValue) {}
 
-	virtual void Reset() {}
+	void UseBall(bool bUse) { bUsed = bUse; }
 
 	virtual FString GetActualValue() { return FString(); }
+
+	virtual bool IsUsed() { return bUsed; }
+
+private:
+	bool bUsed = false;
 };
 
 USTRUCT(BlueprintType)
@@ -50,11 +57,9 @@ struct FAddOrSubBall : public FFillBallBase
 {
 	GENERATED_BODY()
 
-	FAddOrSubBall();
+	virtual void Init() override;
 	
 	virtual void ChangeValue(FString NewValue) override;
-
-	virtual void Reset() override;
 
 	virtual FString GetActualValue() override;
 
@@ -68,11 +73,9 @@ struct FMultiOrDivBall : public FFillBallBase
 {
 	GENERATED_BODY()
 
-	FMultiOrDivBall();
+	virtual void Init() override;
 
 	virtual void ChangeValue(FString NewValue) override;
-
-	virtual void Reset() override;
 
 	virtual FString GetActualValue() override;
 
@@ -89,11 +92,9 @@ struct FTextBall : public FFillBallBase
 {
 	GENERATED_BODY()
 
-	FTextBall();
+	virtual void Init() override;
 
 	virtual void ChangeValue(FString NewValue) override;
-
-	virtual void Reset() override;
 
 	virtual FString GetActualValue() override;
 
