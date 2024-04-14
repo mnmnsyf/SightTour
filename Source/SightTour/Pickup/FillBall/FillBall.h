@@ -82,6 +82,9 @@ public:
 	//数字小球配置
 	FInstancedStruct FillBallConfig;
 
+	//是否开启伤害
+	bool bEnableDamage = false;
+
 private:
 	UPROPERTY()
 	TObjectPtr<UTP_WeaponComponent> OwnerWeapon = nullptr;

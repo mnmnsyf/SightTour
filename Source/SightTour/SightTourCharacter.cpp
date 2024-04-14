@@ -56,6 +56,8 @@ void ASightTourCharacter::BeginPlay()
 	check(LocalPlayer);
 
 	USightTourUIManager::Get()->NotifyPlayerAdded(LocalPlayer);
+
+	ResetDefaultHealth();
 }
 
 void ASightTourCharacter::Tick(float DeltaTime)
@@ -165,6 +167,20 @@ void ASightTourCharacter::SetHasRifle(bool bNewHasRifle, UTP_WeaponComponent* In
 bool ASightTourCharacter::GetHasRifle()
 {
 	return bHasRifle;
+}
+
+void ASightTourCharacter::ReduceHealth(const float ReduceValue)
+{
+	CurrentHealth -= ReduceValue;
+
+	if (CurrentHealth <= 0)
+	{
+		//TODO:播放死亡动画&音效
+		//SetLifeSpan(5.0f);
+	}
+
+	FString DebugMsg = FString::Printf(TEXT("Player current health %.0f"), CurrentHealth);
+	GEngine->AddOnScreenDebugMessage(-1, 1500.0f, FColor::Cyan, DebugMsg);
 }
 
 FTransform ASightTourCharacter::GetCameraTransform()

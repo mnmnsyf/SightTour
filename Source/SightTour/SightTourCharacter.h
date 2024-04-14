@@ -39,6 +39,15 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Weapon)
 	bool GetHasRifle();
 
+public:
+	//扣血
+	void ReduceHealth(const float ReduceValue);
+
+	//恢复默认血量
+	FORCEINLINE void ResetDefaultHealth() { CurrentHealth = DefaultHealth; };
+
+public:
+	/** 获取组件 */
 	USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
 
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
@@ -89,21 +98,29 @@ protected:
 	class UInputMappingContext* DefaultMappingContext;
 
 	/** Jump Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category= "Player | Input", meta=(AllowPrivateAccess = "true"))
 	class UInputAction* JumpAction;
 
 	/** Move Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category= "Player | Input", meta=(AllowPrivateAccess = "true"))
 	class UInputAction* MoveAction;
 
 	/** Dash Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player | Input", meta = (AllowPrivateAccess = "true"))
 	class UInputAction* DashAction;
 
-	UPROPERTY(EditAnywhere, blueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, blueprintReadWrite, Category = "Player | Input", meta = (AllowPrivateAccess = "true"))
 	float DashCoolTime = 3.0f;
 
 	float TickDashTime = 0.0f;
 
+private:
+	/** 当前生命值，蓝图不可修改 */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Player | Health", meta = (AllowPrivateAccess = "true"))
+	float CurrentHealth = 100.f;
+
+	/** 最大生命值，蓝图可修改 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player | Health", meta = (AllowPrivateAccess = "true"))
+	float DefaultHealth = 100.f;
 };
 

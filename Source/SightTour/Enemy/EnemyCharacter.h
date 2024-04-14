@@ -26,14 +26,20 @@ public:
 	//向移动添加力的方向 forceDir传单位方向
 	void SetCharacterMoveByForce(const FVector& ForceDir);
 
+	//扣血
+	void ReduceHealth(const float ReduceValue);
+
+	//恢复默认血量
+	FORCEINLINE void ResetDefaultHealth() { CurrentHealth = DefaultHealth; };
+
 private:
 	/** 敌人当前生命值，蓝图不可修改 */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Combat, meta = (AllowPrivateAccess = "true"))
-	float CurrentHealth;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat | Health", meta = (AllowPrivateAccess = "true"))
+	float CurrentHealth = 100.f;
 
 	/** 敌人最大生命值，蓝图可修改 */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat, meta = (AllowPrivateAccess = "true"))
-	float MaxHealth;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat | Health", meta = (AllowPrivateAccess = "true"))
+	float DefaultHealth = 100.f;
 
 	/** 被子弹击中时产生的粒子效果 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat, meta = (AllowPrivateAccess = "true"))

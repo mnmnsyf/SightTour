@@ -41,4 +41,10 @@ public:
 
 	UPROPERTY(EditAnywhere, DisplayName = "问题持续时长")
 	float DurationTime = 10.f;
+
+	UPROPERTY(EditAnywhere, DisplayName = "更新问题延迟时长")
+	float UpdateDelayTime = 5.f;
+
+	UPROPERTY(EditAnywhere, DisplayName = "伤害值")
+	float DamageValue =	10.f;
 };

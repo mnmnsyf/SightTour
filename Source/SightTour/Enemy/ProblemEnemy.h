@@ -23,23 +23,24 @@ protected:
 	void BeginPlay() override;
 
 public:
+	void InitProblemConfig();
+
 	void UpdateQuestion(FString AnswerStr);
 
+	void UpdateNextQuestion();
+
+	void UpdateQuestionUI(const TArray<FString>& ShowList);
+
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (DisplayName = "问题配置", RowType = "/Script/SightTour.ProblemConfig"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (Category = "问题", DisplayName = "问题配置", RowType = "/Script/SightTour.ProblemConfig"))
 	FDataTableRowHandle ProblemConfigRowHandle;
 
 private:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (Category = "问题", AllowPrivateAccess = true))
+	TObjectPtr<UWidgetComponent> QuestionWidget = nullptr;
+
 	TArray<FInstancedStruct> Problems;
 
 	FInstancedStruct CurrentProblem;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true))
-	TObjectPtr<UWidgetComponent> QuestionWidget = nullptr;
-
-/*
-	+1 -2 *3 /4   *2
-	+ 1 - 2 *2 / 4   +3
-	+ 4 - 2 * 2 / 4 + 3
-*/
 };

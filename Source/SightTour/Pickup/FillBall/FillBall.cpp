@@ -82,6 +82,9 @@ void AFillBall::Spawn(class UTP_WeaponComponent* WeaponComp)
 	//显示小球
 	//SetActorHiddenInGame(false);
 
+	//开启伤害
+	bEnableDamage = true;
+
 	SetActorLocation(WeaponComp->GetMuzzelLocation());
 	SetActorRotation(WeaponComp->GetMuzzelRotation());
 
