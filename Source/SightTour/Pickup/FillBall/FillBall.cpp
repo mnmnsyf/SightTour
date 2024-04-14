@@ -10,24 +10,15 @@
 #include "TP_WeaponComponent.h"
 #include "SightTourCharacter.h"
 #include "Equipment/EquipmentManagerComponent.h"
+#include "../Enemy/ProblemEnemy.h"
 
 AFillBall::AFillBall()
 {
 	ProjectileMesh = CreateDefaultSubobject<UStaticMeshComponent>("ProjectileMesh");
 	ProjectileMesh->SetupAttachment(RootComponent);
 
-	// Use a sphere as a simple collision representation
 	CollisionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComp"));
-	CollisionSphere->InitSphereRadius(5.0f);
-	CollisionSphere->BodyInstance.SetCollisionProfileName("Projectile");
-	CollisionSphere->OnComponentHit.AddDynamic(this, &AFillBall::OnHit);		// set up a notification for when this component hits something blocking
-
-	// Players can't walk on it
-	CollisionSphere->SetWalkableSlopeOverride(FWalkableSlopeOverride(WalkableSlope_Unwalkable, 0.f));
-	CollisionSphere->CanCharacterStepUpOn = ECB_No;
-
-	// Die after 3 seconds by default
-	//InitialLifeSpan = 3.0f;
+	CollisionSphere->SetupAttachment(ProjectileMesh);
 }
 
 void AFillBall::Tick(float DeltaTime)
@@ -43,6 +34,8 @@ void AFillBall::Tick(float DeltaTime)
 void AFillBall::BeginPlay()
 {
 	Super::BeginPlay();
+
+	CollisionSphere->OnComponentBeginOverlap.AddDynamic(this, &AFillBall::BallSphereOverlap);
 
 	//SetActorHiddenInGame(false);
 
@@ -196,14 +189,38 @@ void AFillBall::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimiti
 	{
 		return;
 	}
-	if (!OtherComp || OtherComp->IsSimulatingPhysics() || Cast<UTP_WeaponComponent>(OtherComp))
+	if (!OtherComp || Cast<UTP_WeaponComponent>(OtherComp))
 	{
 		return;
 	}
 
-	OtherComp->AddImpulseAtLocation(GetVelocity() * 100.0f, GetActorLocation());
+	//OtherComp->AddImpulseAtLocation(GetVelocity() * 100.0f, GetActorLocation());
+
+	if (AProblemEnemy* ProblemEnemy = Cast<AProblemEnemy>(OtherActor))
+	{
+		if (FFillBallBase* BallConfig = FillBallConfig.GetMutablePtr<FFillBallBase>())
+		{
+			ProblemEnemy->UpdateQuestion(BallConfig->GetActualValue());
+		}
+	}
 
 	GEngine->AddOnScreenDebugMessage(-1, 1500.0f, FColor::Red, TEXT("Projectile hit"));
+}
+
+void AFillBall::BallSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor)
+	{
+		if (AProblemEnemy* ProblemEnemy = Cast<AProblemEnemy>(OtherActor))
+		{
+			if (FFillBallBase* BallConfig = FillBallConfig.GetMutablePtr<FFillBallBase>())
+			{
+				ProblemEnemy->UpdateQuestion(BallConfig->GetActualValue());
+			}
+		}
+
+		GEngine->AddOnScreenDebugMessage(-1, 1500.0f, FColor::Red, TEXT("Projectile hit"));
+	}
 }
 
 void AFillBall::PerMove()

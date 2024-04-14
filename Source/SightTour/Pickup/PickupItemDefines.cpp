@@ -16,7 +16,7 @@ void FAddOrSubBall::ChangeValue(FString NewValue)
 
 FString FAddOrSubBall::GetActualValue()
 {
-	return (Value > 0) ? FString::Printf(TEXT("+%d"), Value) : FString::Printf(TEXT("-%d"), Value);
+	return (Value > 0) ? FString::Printf(TEXT("+%d"), Value) : FString::Printf(TEXT("%d"), Value);
 }
 
 void FMultiOrDivBall::Init()

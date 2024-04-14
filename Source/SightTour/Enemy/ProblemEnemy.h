@@ -22,6 +22,7 @@ class SIGHTTOUR_API AProblemEnemy : public AEnemyCharacter
 protected:
 	void BeginPlay() override;
 
+public:
 	void UpdateQuestion(FString AnswerStr);
 
 public:
