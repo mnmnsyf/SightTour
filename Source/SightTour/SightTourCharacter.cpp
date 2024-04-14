@@ -11,9 +11,12 @@
 #include "Pickup/Equipment/EquipmentManagerComponent.h"
 #include "UserSettings/EnhancedInputUserSettings.h"
 #include "UI/Subsystem/SightTourUIManager.h"
+#include "UI/Player/WG_PlayerHealth.h"
 
 //////////////////////////////////////////////////////////////////////////
 // ASightTourCharacter
+
+UE_DEFINE_GAMEPLAY_TAG_STATIC(HealthBarLayer, "UI.Layer.Modal");
 
 ASightTourCharacter::ASightTourCharacter()
 {
@@ -58,6 +61,8 @@ void ASightTourCharacter::BeginPlay()
 	USightTourUIManager::Get()->NotifyPlayerAdded(LocalPlayer);
 
 	ResetDefaultHealth();
+
+	UpdateHealthBar();
 }
 
 void ASightTourCharacter::Tick(float DeltaTime)
@@ -179,8 +184,24 @@ void ASightTourCharacter::ReduceHealth(const float ReduceValue)
 		//SetLifeSpan(5.0f);
 	}
 
+	UpdateHealthBar();
+
 	FString DebugMsg = FString::Printf(TEXT("Player current health %.0f"), CurrentHealth);
 	GEngine->AddOnScreenDebugMessage(-1, 1500.0f, FColor::Cyan, DebugMsg);
+}
+
+void ASightTourCharacter::UpdateHealthBar()
+{
+	if (!HealthBar && HealthBarClass)
+	{
+		USightTourUIManager* UIManager = USightTourUIManager::Get();
+		check(UIManager);
+		HealthBar = CastChecked<UWG_PlayerHealth>(UIManager->PushContentToLayer_ForPlayer(GetPlayerController()->GetLocalPlayer(), HealthBarLayer, HealthBarClass));
+	}
+	if (HealthBar)
+	{
+		HealthBar->SetHealth(CurrentHealth / DefaultHealth);
+	}
 }
 
 FTransform ASightTourCharacter::GetCameraTransform()

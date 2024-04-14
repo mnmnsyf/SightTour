@@ -46,6 +46,8 @@ public:
 	//恢复默认血量
 	FORCEINLINE void ResetDefaultHealth() { CurrentHealth = DefaultHealth; };
 
+	void UpdateHealthBar();
+
 public:
 	/** 获取组件 */
 	USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
@@ -122,5 +124,11 @@ private:
 	/** 最大生命值，蓝图可修改 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player | Health", meta = (AllowPrivateAccess = "true"))
 	float DefaultHealth = 100.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player | Health", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<class UWG_PlayerHealth> HealthBarClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player | Health", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UWG_PlayerHealth> HealthBar;
 };
 
