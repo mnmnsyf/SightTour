@@ -71,6 +71,8 @@ protected:
 	//冲刺
 	void Dash(const FInputActionValue& Value);
 
+	void NumberTrigger(const FInputActionValue& Value, int32 Number);
+
 public:
 	/** Look Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
@@ -111,6 +113,22 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player | Input", meta = (AllowPrivateAccess = "true"))
 	class UInputAction* DashAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player | Input", meta = (AllowPrivateAccess = "true"))
+	class UInputAction* NumberOneAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player | Input", meta = (AllowPrivateAccess = "true"))
+	class UInputAction* NumberTwoAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player | Input", meta = (AllowPrivateAccess = "true"))
+	class UInputAction* NumberThreeAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player | Input", meta = (AllowPrivateAccess = "true"))
+	class UInputAction* NumberFourAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player | Input", meta = (AllowPrivateAccess = "true"))
+	class UInputAction* NumberFiveAction;
+
+
 	UPROPERTY(EditAnywhere, blueprintReadWrite, Category = "Player | Input", meta = (AllowPrivateAccess = "true"))
 	float DashCoolTime = 3.0f;
 
@@ -126,9 +144,9 @@ private:
 	float DefaultHealth = 100.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player | Health", meta = (AllowPrivateAccess = "true"))
-	TSubclassOf<class UWG_PlayerHealth> HealthBarClass;
+	TSubclassOf<class UWG_PlayerHUD> HealthBarClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player | Health", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<class UWG_PlayerHealth> HealthBar;
+	TObjectPtr<class UWG_PlayerHUD> HealthBar;
 };
 

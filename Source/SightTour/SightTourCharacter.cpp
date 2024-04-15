@@ -11,7 +11,7 @@
 #include "Pickup/Equipment/EquipmentManagerComponent.h"
 #include "UserSettings/EnhancedInputUserSettings.h"
 #include "UI/Subsystem/SightTourUIManager.h"
-#include "UI/Player/WG_PlayerHealth.h"
+#include "UI/Player/WG_PlayerHUD.h"
 
 //////////////////////////////////////////////////////////////////////////
 // ASightTourCharacter
@@ -109,6 +109,16 @@ void ASightTourCharacter::SetupPlayerInputComponent(class UInputComponent* Playe
 
 		//冲刺
 		EnhancedInputComponent->BindAction(DashAction, ETriggerEvent::Triggered, this, &ASightTourCharacter::Dash);
+	
+		EnhancedInputComponent->BindAction(NumberOneAction, ETriggerEvent::Triggered, this, &ASightTourCharacter::NumberTrigger, 1);
+
+		EnhancedInputComponent->BindAction(NumberTwoAction, ETriggerEvent::Triggered, this, &ASightTourCharacter::NumberTrigger, 2);
+
+		EnhancedInputComponent->BindAction(NumberThreeAction, ETriggerEvent::Triggered, this, &ASightTourCharacter::NumberTrigger, 3);
+
+		EnhancedInputComponent->BindAction(NumberFourAction, ETriggerEvent::Triggered, this, &ASightTourCharacter::NumberTrigger, 4);
+
+		EnhancedInputComponent->BindAction(NumberFiveAction, ETriggerEvent::Triggered, this, &ASightTourCharacter::NumberTrigger, 5);
 	}
 }
 
@@ -162,6 +172,14 @@ void ASightTourCharacter::Dash(const FInputActionValue& Value)
 	}
 }
 
+void ASightTourCharacter::NumberTrigger(const FInputActionValue& Value, int32 Number)
+{
+	if (Value.IsNonZero())
+	{
+		EquipmentManagerComponent->ChangeSlot(Number - 1);
+	}
+}
+
 void ASightTourCharacter::SetHasRifle(bool bNewHasRifle, UTP_WeaponComponent* InEquippedWeapon)
 {
 	bHasRifle = bNewHasRifle;
@@ -196,7 +214,7 @@ void ASightTourCharacter::UpdateHealthBar()
 	{
 		USightTourUIManager* UIManager = USightTourUIManager::Get();
 		check(UIManager);
-		HealthBar = CastChecked<UWG_PlayerHealth>(UIManager->PushContentToLayer_ForPlayer(GetPlayerController()->GetLocalPlayer(), HealthBarLayer, HealthBarClass));
+		HealthBar = CastChecked<UWG_PlayerHUD>(UIManager->PushContentToLayer_ForPlayer(GetPlayerController()->GetLocalPlayer(), HealthBarLayer, HealthBarClass));
 	}
 	if (HealthBar)
 	{

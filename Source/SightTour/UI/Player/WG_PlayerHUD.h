@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "CommonActivatableWidget.h"
-#include "WG_PlayerHealth.generated.h"
+#include "WG_PlayerHUD.generated.h"
 
 /**
  * 
  */
-UCLASS(meta = (Instanced))
-class SIGHTTOUR_API UWG_PlayerHealth : public UCommonActivatableWidget
+UCLASS()
+class SIGHTTOUR_API UWG_PlayerHUD : public UCommonActivatableWidget
 {
 	GENERATED_BODY()
 

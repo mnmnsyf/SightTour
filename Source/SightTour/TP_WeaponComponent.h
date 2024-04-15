@@ -107,8 +107,4 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<AProjectile> AttactProjectile = nullptr;
-
-	//TODO
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon | Ball", meta = (AllowPrivateAccess = "true"))
-	FName FillBallType = FName("AddBall");
 };

@@ -10,6 +10,9 @@
 class UObject;
 class UTP_WeaponComponent;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FPickupBallDelegate, bool, bPickup, int32, SlotIndex, FString, BallContent);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FChangeSlotDelegate, int32, LastIndex, int32, NextIndex);
+
 /**
  * 装备管理组件，管理玩家装备的枪械和子弹数量
  */
@@ -35,7 +38,18 @@ public:
 	void PickupFillBall(AFillBall* Ball);
 
 	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
-	FInstancedStruct DiscardFillBall(FName BallType);
+	FInstancedStruct DiscardFillBall();
+
+	void ChangeSlot(int32 NewSlot);
+
+	FORCEINLINE int32 GetCurrentSlot() const { return CurrentSlot; }
+
+	FName GetCurrentBallType() const;
+
+public:
+	FPickupBallDelegate PickupBallDelegate;
+
+	FChangeSlotDelegate ChangeSlotDelegate;
 
 private:
 	//现在手持的枪械
@@ -43,5 +57,8 @@ private:
 	UTP_WeaponComponent* EquippedWeapon = nullptr;
 
 	UPROPERTY()
-	TArray<FInstancedStruct> BallList;
+	TMap<int32, FInstancedStruct> BallMap;
+
+	//当前选择的Slot
+	int32 CurrentSlot = 0;
 };

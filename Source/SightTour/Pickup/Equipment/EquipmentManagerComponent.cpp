@@ -22,11 +22,14 @@ UEquipmentManagerComponent* UEquipmentManagerComponent::Get(AActor* Owner)
 
 void UEquipmentManagerComponent::PickupFillBall(AFillBall* Ball)
 {
+	TArray<int32> SlotIndexs = { 0, 1, 2, 3, 4 };
+
 	FFillBallBase* TempFillBall = Ball->FillBallConfig.GetMutablePtr<FFillBallBase>();
 	if (TempFillBall)
 	{
-		for (FInstancedStruct EachBall : BallList)
+		for (auto&& [BallIndex, EachBall] : BallMap)
 		{
+			SlotIndexs.Remove(BallIndex);
 			FFillBallBase* EachBallConfig = EachBall.GetMutablePtr<FFillBallBase>();
 			if (EachBallConfig)
 			{
@@ -34,29 +37,57 @@ void UEquipmentManagerComponent::PickupFillBall(AFillBall* Ball)
 				{
 					EachBallConfig->ChangeValue(TempFillBall->GetActualValue());
 					Ball->Destroy();
+
+					PickupBallDelegate.Broadcast(true, BallIndex, EachBallConfig->GetActualValue());
 					return;
 				}
 			}
 		}
-		BallList.Emplace(Ball->FillBallConfig);
+
+		// 没有相同类型的情况
+		if (SlotIndexs.Num() > 0)
+		{
+			BallMap.Emplace(SlotIndexs[0], Ball->FillBallConfig);
+			PickupBallDelegate.Broadcast(true, SlotIndexs[0], TempFillBall->GetActualValue());
+		}
 		Ball->Destroy();
 	}
 }
 
-FInstancedStruct UEquipmentManagerComponent::DiscardFillBall(FName BallType)
+FInstancedStruct UEquipmentManagerComponent::DiscardFillBall()
 {
 	FInstancedStruct ReturnBallConfig;
 
-	for (auto It = BallList.CreateIterator(); It; ++It)
+	for (auto It = BallMap.CreateIterator(); It; ++It)
 	{
-		FFillBallBase* EachBallConfig = It->GetMutablePtr<FFillBallBase>();
-		if (EachBallConfig && EachBallConfig->ItemTypeName == BallType)
+		FFillBallBase* EachBallConfig = It->Value.GetMutablePtr<FFillBallBase>();
+		if (EachBallConfig && EachBallConfig->ItemTypeName == GetCurrentBallType())
 		{
-			ReturnBallConfig = *It;
+			ReturnBallConfig = It->Value;
+			PickupBallDelegate.Broadcast(false, It->Key, EachBallConfig->GetActualValue());
 			It.RemoveCurrent();
 			break;
 		}
 	}
 
 	return ReturnBallConfig;
+}
+
+void UEquipmentManagerComponent::ChangeSlot(int32 NewSlot)
+{
+	ChangeSlotDelegate.Broadcast(CurrentSlot, NewSlot);
+	CurrentSlot = NewSlot;
+}
+
+FName UEquipmentManagerComponent::GetCurrentBallType() const
+{
+	FName ReturnName;
+	if (const FInstancedStruct* BallStruct = BallMap.Find(CurrentSlot))
+	{
+		if (const FFillBallBase* CurrentBallConfig = BallStruct->GetPtr<FFillBallBase>())
+		{
+			ReturnName = CurrentBallConfig->ItemTypeName;
+		}
+	}
+	return ReturnName;
 }

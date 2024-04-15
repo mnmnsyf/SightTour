@@ -48,7 +48,7 @@ void UTP_WeaponComponent::Fire()
 	//打出子弹总伤害
 	else if (UEquipmentManagerComponent* EquipmentManager = OwnerCharacter->GetEquipmentManagerComponent())
 	{
-		FInstancedStruct TempFillBallConfig = EquipmentManager->DiscardFillBall(FillBallType);
+		FInstancedStruct TempFillBallConfig = EquipmentManager->DiscardFillBall();
 		if (TempFillBallConfig.IsValid())
 		{
 			FActorSpawnParameters SpawnParams;
