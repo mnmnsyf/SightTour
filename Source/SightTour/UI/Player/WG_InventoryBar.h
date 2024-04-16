@@ -24,7 +24,7 @@ public:
 protected:
 	void NativeConstruct() override;
 
-	void OnBallPickup(bool bPickup, int32 InSlotIndex, FString BallContent);
+	void OnBallPickup(bool bPickup, int32 InSlotIndex, FString BallContent, FName BallType);
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void BP_OnBallSlotChange(int32 LastIndex, int32 NextIndex);
@@ -32,6 +32,9 @@ protected:
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player | HealthBar", meta = (AllowPrivateAccess = "true"))
 	TSoftClassPtr<class UWG_BallSlot> BallSlotClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player | Ball", meta = (AllowPrivateAccess = "true"))
+	TMap<FName, class UTexture2D*> BallTypeIconMap;
 
 private:
 	UWG_BallSlot* LoadBallSlot();

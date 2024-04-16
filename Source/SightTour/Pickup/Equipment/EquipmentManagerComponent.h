@@ -10,7 +10,7 @@
 class UObject;
 class UTP_WeaponComponent;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FPickupBallDelegate, bool, bPickup, int32, SlotIndex, FString, BallContent);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FPickupBallDelegate, bool, bPickup, int32, SlotIndex, FString, BallContent, FName, BallType);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FChangeSlotDelegate, int32, LastIndex, int32, NextIndex);
 
 /**

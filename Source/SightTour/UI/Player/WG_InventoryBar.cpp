@@ -6,6 +6,7 @@
 #include "Pickup/Equipment/EquipmentManagerComponent.h"
 #include "WG_BallSlot.h"
 #include "Components/HorizontalBox.h"
+#include "Engine/Texture2D.h"
 
 
 void UWG_InventoryBar::NativeConstruct()
@@ -32,11 +33,18 @@ void UWG_InventoryBar::NativeConstruct()
 	}
 }
 
-void UWG_InventoryBar::OnBallPickup(bool bPickup, int32 InSlotIndex, FString BallContent)
+void UWG_InventoryBar::OnBallPickup(bool bPickup, int32 InSlotIndex, FString BallContent, FName BallType)
 {
 	check(InventorySlot.IsValidIndex(InSlotIndex));
-	bPickup ? InventorySlot[InSlotIndex]->SetBallContent(BallContent)
+	if (UTexture2D** BallTexture = BallTypeIconMap.Find(BallType))
+	{
+		bPickup ? InventorySlot[InSlotIndex]->SetBallContent(BallContent, *BallTexture)
 			: InventorySlot[InSlotIndex]->ClearBallContent();
+	}
+	else
+	{
+		ensure(false);
+	}
 }
 
 UWG_BallSlot* UWG_InventoryBar::LoadBallSlot()

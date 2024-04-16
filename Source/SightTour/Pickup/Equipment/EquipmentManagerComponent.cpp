@@ -38,7 +38,7 @@ void UEquipmentManagerComponent::PickupFillBall(AFillBall* Ball)
 					EachBallConfig->ChangeValue(TempFillBall->GetActualValue());
 					Ball->Destroy();
 
-					PickupBallDelegate.Broadcast(true, BallIndex, EachBallConfig->GetActualValue());
+					PickupBallDelegate.Broadcast(true, BallIndex, EachBallConfig->GetActualValue(), EachBallConfig->ItemTypeName);
 					return;
 				}
 			}
@@ -48,7 +48,7 @@ void UEquipmentManagerComponent::PickupFillBall(AFillBall* Ball)
 		if (SlotIndexs.Num() > 0)
 		{
 			BallMap.Emplace(SlotIndexs[0], Ball->FillBallConfig);
-			PickupBallDelegate.Broadcast(true, SlotIndexs[0], TempFillBall->GetActualValue());
+			PickupBallDelegate.Broadcast(true, SlotIndexs[0], TempFillBall->GetActualValue(), TempFillBall->ItemTypeName);
 		}
 		Ball->Destroy();
 	}
@@ -64,7 +64,7 @@ FInstancedStruct UEquipmentManagerComponent::DiscardFillBall()
 		if (EachBallConfig && EachBallConfig->ItemTypeName == GetCurrentBallType())
 		{
 			ReturnBallConfig = It->Value;
-			PickupBallDelegate.Broadcast(false, It->Key, EachBallConfig->GetActualValue());
+			PickupBallDelegate.Broadcast(false, It->Key, EachBallConfig->GetActualValue(), EachBallConfig->ItemTypeName);
 			It.RemoveCurrent();
 			break;
 		}

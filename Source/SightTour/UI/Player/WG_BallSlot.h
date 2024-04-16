@@ -17,13 +17,16 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	class UTextBlock* T_BallContent;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	class UImage* I_BallIcon;
+
 protected:
 	void NativeConstruct() override;
 
 	
 
 public:
-	void SetBallContent(FString NewContent);
+	void SetBallContent(FString NewContent, class UTexture2D* NewTexture);
 
 	void ClearBallContent();
 };
