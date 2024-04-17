@@ -231,6 +231,9 @@ int32 FProblem_Formula::ExpressionEvaluation(const TArray<FString>& Expression)
 		Evaluate();
 	}
 
-
-	return NumberStack.Top();
+	if (ensure(NumberStack.Num()))
+	{
+		return NumberStack.Top();
+	}
+	return INDEX_NONE;
 }
