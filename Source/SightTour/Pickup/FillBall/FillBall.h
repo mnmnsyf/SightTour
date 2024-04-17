@@ -7,6 +7,7 @@
 #include "Interface/AttractInterface.h"
 #include "Engine/DataTable.h"
 #include "PickupItemDefines.h"
+#include "../Interface/ItemInfoInterface.h"
 #include "FillBall.generated.h"
 
 class UTP_WeaponComponent;
@@ -18,7 +19,7 @@ class USphereComponent;
  * 数字小球
  */
 UCLASS()
-class SIGHTTOUR_API AFillBall : public APickupItemBase, public IAttractInterface
+class SIGHTTOUR_API AFillBall : public APickupItemBase, public IAttractInterface, public IItemInfoInterface
 {
 	GENERATED_BODY()
 	
@@ -31,6 +32,8 @@ protected:
 	virtual void BeginPlay();
 
 public:
+	FString GetItemName() override;
+
 	void Attract(class UTP_WeaponComponent* WeaponComp) override;
 
 	void Spawn(class UTP_WeaponComponent* WeaponComp) override;

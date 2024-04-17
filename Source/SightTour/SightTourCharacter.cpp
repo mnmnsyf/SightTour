@@ -12,11 +12,13 @@
 #include "UserSettings/EnhancedInputUserSettings.h"
 #include "UI/Subsystem/SightTourUIManager.h"
 #include "UI/Player/WG_PlayerHUD.h"
+#include "UI/Common/WG_ItemName.h"
 
 //////////////////////////////////////////////////////////////////////////
 // ASightTourCharacter
 
-UE_DEFINE_GAMEPLAY_TAG_STATIC(PlayerHUDLayer, "UI.Layer.Modal");
+UE_DEFINE_GAMEPLAY_TAG_STATIC(PlayerHUDLayer, "UI.Layer.Game");
+UE_DEFINE_GAMEPLAY_TAG_STATIC(ItemInfoLayer, "UI.Layer.GameMenu");
 
 ASightTourCharacter::ASightTourCharacter()
 {
@@ -143,15 +145,17 @@ void ASightTourCharacter::Move(const FInputActionValue& Value)
 
 void ASightTourCharacter::Look(const FInputActionValue& Value)
 {
-	// input is a Vector2D
 	FVector2D LookAxisVector = Value.Get<FVector2D>();
 
+	//旋转镜头
 	if (Controller != nullptr)
 	{
-		// add yaw and pitch input to controller
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
 	}
+
+	//更新视线内物品信息
+	UpdateItemInfoInSight();
 }
 
 void ASightTourCharacter::Dash(const FInputActionValue& Value)
@@ -220,6 +224,42 @@ void ASightTourCharacter::UpdateHealthBar()
 	{
 		PlayerHUD->SetHealth(CurrentHealth / DefaultHealth);
 	}
+}
+
+void ASightTourCharacter::UpdateItemInfoInSight()
+{
+	if (!ItemInfoUI && ItemInfoClass)
+	{
+		USightTourUIManager* UIManager = USightTourUIManager::Get();
+		check(UIManager);
+		ItemInfoUI = CastChecked<UWG_ItemName>(UIManager->PushContentToLayer_ForPlayer(GetPlayerController()->GetLocalPlayer(), ItemInfoLayer, ItemInfoClass));
+	}
+	if (ItemInfoUI)
+	{
+		ItemInfoUI->SetText(GetItemNameInSight());
+	}
+}
+
+FString ASightTourCharacter::GetItemNameInSight()
+{
+	FVector CameraDirection = GetCameraTransform().Rotator().Vector() * 500.0f;
+
+	FHitResult OutHitResult;
+	const FVector TraceStart = GetCameraTransform().GetLocation();
+	const FVector TraceEnd = TraceStart + CameraDirection;
+
+	GetWorld()->LineTraceSingleByChannel(OutHitResult, TraceStart, TraceEnd, ECollisionChannel::ECC_Visibility);
+
+	if (OutHitResult.bBlockingHit)
+	{
+		AActor* HitActor = OutHitResult.GetActor();
+		if (IItemInfoInterface* Item = Cast<IItemInfoInterface>(HitActor))
+		{
+			return Item->GetItemName();
+		}
+	}
+
+	return FString();
 }
 
 FTransform ASightTourCharacter::GetCameraTransform()

@@ -46,7 +46,13 @@ public:
 	//恢复默认血量
 	FORCEINLINE void ResetDefaultHealth() { CurrentHealth = DefaultHealth; };
 
+	/** 更新玩家HUD */
 	void UpdateHealthBar();
+
+	/** 更新视线内物品信息 */
+	void UpdateItemInfoInSight();
+
+	FString GetItemNameInSight();
 
 public:
 	/** 获取组件 */
@@ -143,10 +149,20 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player | Health", meta = (AllowPrivateAccess = "true"))
 	float DefaultHealth = 100.f;
 
+
+private:
+	/** 玩家HUD */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player | Health", meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<class UWG_PlayerHUD> PlayerHUDClass;
 
 	UPROPERTY()
 	TObjectPtr<class UWG_PlayerHUD> PlayerHUD;
+
+	/** 物品信息UI */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player | Info", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<class UWG_ItemName> ItemInfoClass;
+
+	UPROPERTY()
+	TObjectPtr<class UWG_ItemName> ItemInfoUI;
 };
 

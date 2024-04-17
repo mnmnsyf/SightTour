@@ -31,6 +31,17 @@ void AFillBall::Tick(float DeltaTime)
 	}
 }
 
+FString AFillBall::GetItemName()
+{
+	FFillBallBase* BallInfo = FillBallConfig.GetMutablePtr<FFillBallBase>();
+	if (BallInfo)
+	{
+		return BallInfo->GetActualValue();
+	}
+
+	return FString();
+}
+
 void AFillBall::BeginPlay()
 {
 	Super::BeginPlay();
