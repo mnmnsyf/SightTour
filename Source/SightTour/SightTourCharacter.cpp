@@ -18,7 +18,7 @@
 // ASightTourCharacter
 
 UE_DEFINE_GAMEPLAY_TAG_STATIC(PlayerHUDLayer, "UI.Layer.Game");
-UE_DEFINE_GAMEPLAY_TAG_STATIC(ItemInfoLayer, "UI.Layer.GameMenu");
+UE_DEFINE_GAMEPLAY_TAG_STATIC(ItemInfoLayer, "UI.Layer.Modal");
 
 ASightTourCharacter::ASightTourCharacter()
 {

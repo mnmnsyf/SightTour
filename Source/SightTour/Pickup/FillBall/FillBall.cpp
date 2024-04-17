@@ -218,7 +218,7 @@ void AFillBall::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimiti
 		}
 	}
 
-	GEngine->AddOnScreenDebugMessage(-1, 1500.0f, FColor::Red, TEXT("Projectile hit"));
+	//GEngine->AddOnScreenDebugMessage(-1, 1500.0f, FColor::Red, TEXT("Projectile hit"));
 }
 
 void AFillBall::BallSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
