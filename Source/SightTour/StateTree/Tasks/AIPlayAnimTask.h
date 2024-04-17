@@ -69,7 +69,7 @@ public:
 
 };
 
-USTRUCT(DisplayName = " Reach Point By Nav")
+USTRUCT(DisplayName = " Play Anim")
 struct SIGHTTOUR_API FAIPlayAnimTask : public FStateTreeTaskCommonBase
 {
 	GENERATED_BODY()

@@ -65,7 +65,7 @@ UAnimMontage* AEnemyCharacter::PlayAnimAsMontage(UAnimSequence* Anim, const floa
 
 FName AEnemyCharacter::GetRandomAttackSectionName()
 {
-	if (ensure(!AttackAnim))
+	if (ensure(!AttackAnim->IsValidAdditive()))
 	{
 		return NAME_None;
 	}
