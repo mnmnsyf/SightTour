@@ -7,6 +7,8 @@
 namespace STBBC
 {
 	static const FName STBB_PARAM_Follow = TEXT("Follow");						//AI跟随
+
+	static const FName STBB_PARAM_Attack = TEXT("Attack");						
 };
 
 //AI Follow 所需数据结构

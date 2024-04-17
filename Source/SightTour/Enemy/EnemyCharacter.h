@@ -6,6 +6,10 @@
 #include "GameFramework/Character.h"
 #include "EnemyCharacter.generated.h"
 
+class UAnimMontage;
+class UAnimationAsset;
+class UAnimSequence;
+
 UCLASS()
 class SIGHTTOUR_API AEnemyCharacter : public ACharacter
 {
@@ -32,6 +36,11 @@ public:
 	//恢复默认血量
 	FORCEINLINE void ResetDefaultHealth() { CurrentHealth = DefaultHealth; };
 
+	//播放动画蒙太奇
+	UAnimMontage* PlayAnimAsMontage(class UAnimSequence* Anim, const float PlayRate = 1.0f);
+
+	FName GetRandomAttackSectionName();
+
 private:
 	/** 敌人当前生命值，蓝图不可修改 */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat | Health", meta = (AllowPrivateAccess = "true"))
@@ -42,10 +51,15 @@ private:
 	float DefaultHealth = 100.f;
 
 	/** 被子弹击中时产生的粒子效果 */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat | Impact", meta = (AllowPrivateAccess = "true"))
 	class UParticleSystem* ImpactParticles;
 
 	/** 被子弹击中时播放的声音 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat, meta = (AllowPrivateAccess = "true"))
 	class USoundCue* ImpactSound;
+
+public:
+	/** 包含不同攻击方式的动画蒙太奇 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat | Attack", meta = (AllowPrivateAccess = "true"))
+	class UAnimMontage* AttackAnim;
 };
