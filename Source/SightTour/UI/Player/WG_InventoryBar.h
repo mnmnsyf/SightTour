@@ -16,21 +16,19 @@ class SIGHTTOUR_API UWG_InventoryBar : public UCommonActivatableWidget
 
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	class UProgressBar* PB_Health;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	class UHorizontalBox* HB_InventoryBox;
 
 protected:
 	void NativeConstruct() override;
 
+	UFUNCTION()
 	void OnBallPickup(bool bPickup, int32 InSlotIndex, FString BallContent, FName BallType);
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void BP_OnBallSlotChange(int32 LastIndex, int32 NextIndex);
 
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player | HealthBar", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player | HealthBar", meta = (AllowPrivateAccess = "true", AllowAbstract))
 	TSoftClassPtr<class UWG_BallSlot> BallSlotClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player | Ball", meta = (AllowPrivateAccess = "true"))

@@ -36,4 +36,9 @@ void UWG_BallSlot::ClearBallContent()
 void UWG_BallSlot::NativeConstruct()
 {
 	Super::NativeConstruct();
+
+	if (I_BallIcon)
+	{
+		I_BallIcon->SetVisibility(ESlateVisibility::Collapsed);
+	}
 }

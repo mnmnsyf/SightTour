@@ -16,7 +16,7 @@
 //////////////////////////////////////////////////////////////////////////
 // ASightTourCharacter
 
-UE_DEFINE_GAMEPLAY_TAG_STATIC(HealthBarLayer, "UI.Layer.Modal");
+UE_DEFINE_GAMEPLAY_TAG_STATIC(PlayerHUDLayer, "UI.Layer.Modal");
 
 ASightTourCharacter::ASightTourCharacter()
 {
@@ -210,15 +210,15 @@ void ASightTourCharacter::ReduceHealth(const float ReduceValue)
 
 void ASightTourCharacter::UpdateHealthBar()
 {
-	if (!HealthBar && HealthBarClass)
+	if (!PlayerHUD && PlayerHUDClass)
 	{
 		USightTourUIManager* UIManager = USightTourUIManager::Get();
 		check(UIManager);
-		HealthBar = CastChecked<UWG_PlayerHUD>(UIManager->PushContentToLayer_ForPlayer(GetPlayerController()->GetLocalPlayer(), HealthBarLayer, HealthBarClass));
+		PlayerHUD = CastChecked<UWG_PlayerHUD>(UIManager->PushContentToLayer_ForPlayer(GetPlayerController()->GetLocalPlayer(), PlayerHUDLayer, PlayerHUDClass));
 	}
-	if (HealthBar)
+	if (PlayerHUD)
 	{
-		HealthBar->SetHealth(CurrentHealth / DefaultHealth);
+		PlayerHUD->SetHealth(CurrentHealth / DefaultHealth);
 	}
 }
 

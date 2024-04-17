@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "CommonActivatableWidget.h"
+#include "WG_InventoryBar.h"
 #include "WG_PlayerHUD.generated.h"
 
 /**
@@ -18,6 +19,11 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	class UProgressBar* PB_Health;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	class UWG_InventoryBar* InventoryBar;
+
 public:
+	void NativeConstruct() override;
+
 	void SetHealth(float CurrentHealth);
 };

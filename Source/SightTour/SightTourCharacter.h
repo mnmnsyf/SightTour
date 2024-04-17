@@ -144,9 +144,9 @@ private:
 	float DefaultHealth = 100.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player | Health", meta = (AllowPrivateAccess = "true"))
-	TSubclassOf<class UWG_PlayerHUD> HealthBarClass;
+	TSubclassOf<class UWG_PlayerHUD> PlayerHUDClass;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player | Health", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<class UWG_PlayerHUD> HealthBar;
+	UPROPERTY()
+	TObjectPtr<class UWG_PlayerHUD> PlayerHUD;
 };
 

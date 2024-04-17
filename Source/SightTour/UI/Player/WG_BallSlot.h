@@ -23,8 +23,6 @@ public:
 protected:
 	void NativeConstruct() override;
 
-	
-
 public:
 	void SetBallContent(FString NewContent, class UTexture2D* NewTexture);
 
