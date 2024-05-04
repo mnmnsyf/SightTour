@@ -99,7 +99,7 @@ void AFillBall::Spawn(class UTP_WeaponComponent* WeaponComp)
 	SetActorLocation(WeaponComp->GetMuzzelLocation());
 	SetActorRotation(WeaponComp->GetMuzzelRotation());
 
-	//计算发射轨迹
+	// 计算发射轨迹
 	{
 		FVector MuzzleLocation = WeaponComp->GetMuzzelLocation();
 		FRotator SpawnRotation = WeaponComp->GetMuzzelRotation();
@@ -115,7 +115,9 @@ void AFillBall::Spawn(class UTP_WeaponComponent* WeaponComp)
 			SpawnRotation = UKismetMathLibrary::FindLookAtRotation(MuzzleLocation, CameraDirection);
 		}
 
-		//开启模拟物理
+		// 开启命中检测
+		bOpenHitCheck = true;
+		// 开启模拟物理
 		ProjectileMesh->SetSimulatePhysics(true);
 		ProjectileMesh->AddImpulse(SpawnRotation.Vector() * ForceValue);
 	}
@@ -198,6 +200,11 @@ bool AFillBall::TraceUnderCrosshair(FVector& OutHitLocation)
 
 void AFillBall::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
+	if (!bOpenHitCheck)
+	{
+		return;
+	}
+
 	// Only add impulse and destroy projectile if we hit a physics
 	if (!OtherActor || OtherActor == this)
 	{
@@ -215,6 +222,7 @@ void AFillBall::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimiti
 		if (FFillBallBase* BallConfig = FillBallConfig.GetMutablePtr<FFillBallBase>())
 		{
 			ProblemEnemy->UpdateQuestion(BallConfig->GetActualValue());
+			bOpenHitCheck = false;
 		}
 	}
 

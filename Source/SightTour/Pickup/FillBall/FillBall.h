@@ -22,7 +22,9 @@ UCLASS()
 class SIGHTTOUR_API AFillBall : public APickupItemBase, public IAttractInterface, public IItemInfoInterface
 {
 	GENERATED_BODY()
-	
+
+friend class UTP_WeaponComponent;
+
 public:
 	AFillBall();
 
@@ -98,5 +100,6 @@ private:
 	//是否被吸取中
 	bool bAttacting = false;
 
-	friend class UTP_WeaponComponent;
+	// 是否开启命中检测
+	bool bOpenHitCheck = false;
 };
