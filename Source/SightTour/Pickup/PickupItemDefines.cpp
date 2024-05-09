@@ -26,7 +26,9 @@ void FMultiOrDivBall::Init()
 
 void FMultiOrDivBall::ChangeValue(FString NewValue)
 {
+	NewValue.RemoveAt(0);
 	Value = FCString::Atoi(*NewValue);
+	
 }
 
 FString FMultiOrDivBall::GetActualValue()

@@ -238,10 +238,10 @@ void AFillBall::BallSphereOverlap(UPrimitiveComponent* OverlappedComponent, AAct
 			if (FFillBallBase* BallConfig = FillBallConfig.GetMutablePtr<FFillBallBase>())
 			{
 				ProblemEnemy->UpdateQuestion(BallConfig->GetActualValue());
+
+				GEngine->AddOnScreenDebugMessage(-1, 1500.0f, FColor::Red, TEXT("hit ProblemEnemy"));
 			}
 		}
-
-		GEngine->AddOnScreenDebugMessage(-1, 1500.0f, FColor::Red, TEXT("Projectile hit"));
 	}
 }
 

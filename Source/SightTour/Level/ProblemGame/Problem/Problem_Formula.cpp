@@ -1,11 +1,12 @@
 ﻿// Copyright Epic Games, Inc. All Rights Reserved.
 #include "Problem_Formula.h"
 
+TArray<TCHAR> FProblem_Formula::Operator = { '+', '-', '*', '/' };
+
 void FProblem_Formula::InitProblem()
 {
 	bInit = true;
 
-	static const TArray<TCHAR> Operator = {'+', '-', '*', '/'};
 	//分割等式左右两边
 	bool VisitEquilSign = false;
 	for (int32 i = 0; i < ProblemContent.Len(); ++i)
@@ -76,27 +77,35 @@ FName FProblem_Formula::GetProblemTypeName()
 
 bool FProblem_Formula::FillProblem(FString AnswerStr)
 {
+	//判断字符串是否合法(仅包含数字和运算符号)
+	for(int32 Index = 0 ; Index < AnswerStr.Len(); ++Index)
+	{
+		if (!FChar::IsDigit(AnswerStr[Index]) && Operator.Find(AnswerStr[Index]) == INDEX_NONE)
+		{
+			return false;
+		}
+	}
+
 	if (!bInit)
 	{
 		InitProblem();
 	}
 
 	int32 EmptyStrIndex = LeftExpression.Find("");
-
 	if (EmptyStrIndex != INDEX_NONE)
 	{
 		LeftExpression[EmptyStrIndex] = AnswerStr;
-		return true;
 	}
-
-	EmptyStrIndex = RightExpression.Find("");
-	if (EmptyStrIndex != INDEX_NONE)
+	else
 	{
-		RightExpression[EmptyStrIndex] = AnswerStr;
-		return true;
+		EmptyStrIndex = RightExpression.Find("");
+		if (EmptyStrIndex != INDEX_NONE)
+		{
+			RightExpression[EmptyStrIndex] = AnswerStr;
+		}
 	}
 
-	return false;
+	return LeftExpression.Find("") == INDEX_NONE && RightExpression.Find("") == INDEX_NONE;
 }
 
 bool FProblem_Formula::CheckAllAnswer()
@@ -217,7 +226,7 @@ int32 FProblem_Formula::ExpressionEvaluation(const TArray<FString>& Expression)
 			}
 			else
 			{
-				while (OperatorStack.Num() && OperatorToPriority[OperatorStack.Top()] >= OperatorToPriority[Str[i]])
+				while (OperatorStack.Num() && OperatorToPriority.Contains(Str[i]) && OperatorToPriority[OperatorStack.Top()] >= OperatorToPriority[Str[i]])
 				{
 					Evaluate();
 				}
@@ -236,4 +245,79 @@ int32 FProblem_Formula::ExpressionEvaluation(const TArray<FString>& Expression)
 		return NumberStack.Top();
 	}
 	return INDEX_NONE;
+}
+
+void FProblem_Text::InitProblem()
+{
+	bInit = true;
+	bAnswerQustion = true;
+	for (int32 i = 0; i < ProblemContent.Len(); ++i)
+	{
+		if (ProblemContent[i] == SplitChar[0])
+		{
+			ProblemList.Push("");
+			i++;
+			FString TempString;
+			while (i < ProblemContent.Len() && ProblemContent[i] != SplitChar[0])
+			{
+				TempString.AppendChar(ProblemContent[i]);
+				i++;
+			}
+			AnswerList.Emplace(ProblemList.Num() - 1, TempString);
+		}
+		else
+		{
+			FString TempString;
+			while (i < ProblemContent.Len() && ProblemContent[i] != SplitChar[0])
+			{
+				TempString.AppendChar(ProblemContent[i]);
+				i++;
+			}
+			i--;
+			ProblemList.Push(TempString);
+		}
+	}
+}
+
+TArray<FString> FProblem_Text::GetUIShowList()
+{
+	if (!bInit)
+	{
+		InitProblem();
+	}
+
+	return ProblemList;
+}
+
+bool FProblem_Text::FillProblem(FString AnswerStr)
+{
+	if (!bInit)
+	{
+		InitProblem();
+	}
+	int32 EmptyStrIndex = ProblemList.Find("");
+
+	if (EmptyStrIndex != INDEX_NONE)
+	{
+		ProblemList[EmptyStrIndex] = AnswerStr;
+		
+		if (AnswerList[EmptyStrIndex] != AnswerStr)
+		{
+			bAnswerQustion = false;
+		}
+		return ProblemList.Find("") == INDEX_NONE;
+	}
+
+	return true;
+}
+
+bool FProblem_Text::CheckAllAnswer()
+{
+	return bAnswerQustion;
+}
+
+void FProblem_Text::ResetProblem()
+{
+	ProblemList.Reset();
+	AnswerList.Reset();
 }

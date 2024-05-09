@@ -54,22 +54,26 @@ void AProblemEnemy::UpdateQuestion(FString AnswerStr)
 
 	if (CurrentProblem.IsValid())
 	{
-		if (FProblem_Formula* Problem = CurrentProblem.GetMutablePtr<FProblem_Formula>())
+		FProblemBase* Problem = CurrentProblem.GetMutablePtr<FProblemBase>();
+		if (!Problem)
 		{
-			//填充答案
-			Problem->FillProblem(AnswerStr);
+			return;
+		}
 
-			//判断答案是否回答正确
+		//濉厖绛旀
+		if (Problem->FillProblem(AnswerStr))
+		{
+			//鍒ゆ柇绛旀鏄惁鍥炵瓟姝ｇ‘
 			bool bAnswerRight = Problem->CheckAllAnswer();
 
-			//回答错误
-			if (!bAnswerRight && !Problem->FillProblem(FString()))
+			//鍥炵瓟姝ｇ‘鏁屼汉鎵ｈ
+			if (bAnswerRight)
 			{
-				//延迟更新下一个问题和UI
-				FTimerHandle QuestionTimer;
-				GetWorldTimerManager().SetTimer(QuestionTimer, this, &AProblemEnemy::UpdateNextQuestion, 0.1f, false, Problem->UpdateDelayTime);
-
-				//回答错误玩家扣血
+				ReduceHealth(Problem->DamageValue);
+			}
+			//鍥炵瓟閿欒鐜╁鎵ｈ
+			else
+			{
 				if (ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0))
 				{
 					if (ASightTourCharacter* STCharacter = Cast<ASightTourCharacter>(Player))
@@ -78,21 +82,14 @@ void AProblemEnemy::UpdateQuestion(FString AnswerStr)
 					}
 				}
 			}
-			//回答正确
-			else if (bAnswerRight)
-			{
-				//延迟更新下一个问题和UI
-				FTimerHandle QuestionTimer;
-				GetWorldTimerManager().SetTimer(QuestionTimer, this, &AProblemEnemy::UpdateNextQuestion, 0.1f, false, Problem->UpdateDelayTime);
 
-				//回答正确敌人扣血
-				ReduceHealth(Problem->DamageValue);
-			}
+			//寤惰繜鏇存柊涓嬩竴涓棶棰樺拰UI
+			FTimerHandle QuestionTimer;
+			GetWorldTimerManager().SetTimer(QuestionTimer, this, &AProblemEnemy::UpdateNextQuestion, Problem->UpdateDelayTime, false);
 
-
-			//更新UI
-			UpdateQuestionUI(Problem->GetUIShowList());
 		}
+		//鏇存柊UI
+		UpdateQuestionUI(Problem->GetUIShowList());
 	}
 }
 
@@ -103,14 +100,15 @@ void AProblemEnemy::UpdateNextQuestion()
 		int32 ProblemsIndex = UKismetMathLibrary::RandomIntegerInRange(0, Problems.Num() - 1);
 		CurrentProblem = Problems[ProblemsIndex];
 
-		const FProblem_Formula* CurrentProblemPtr = CurrentProblem.GetMutablePtr<FProblem_Formula>();
+		const FProblemBase* CurrentProblemPtr = CurrentProblem.GetMutablePtr<FProblemBase>();
 		for (auto It = Problems.CreateIterator(); It; ++It)
 		{
-			if (const FProblem_Formula* Problem = It->GetPtr<FProblem_Formula>())
+			if (const FProblemBase* Problem = It->GetPtr<FProblemBase>())
 			{
 				if (Problem->ProblemContent == CurrentProblemPtr->ProblemContent)
 				{
 					It.RemoveCurrent();
+					break;
 				}
 			}
 		}
@@ -122,8 +120,10 @@ void AProblemEnemy::UpdateNextQuestion()
 
 	if (CurrentProblem.IsValid())
 	{
-		if (FProblem_Formula* Problem = CurrentProblem.GetMutablePtr<FProblem_Formula>())
+		FProblemBase* Problem = CurrentProblem.GetMutablePtr<FProblemBase>();
+		if (Problem)
 		{
+			Problem->InitProblem();
 			UpdateQuestionUI(Problem->GetUIShowList());
 		}
 	}
@@ -131,7 +131,7 @@ void AProblemEnemy::UpdateNextQuestion()
 
 void AProblemEnemy::UpdateQuestionUI(const TArray<FString>& ShowList)
 {
-	//更新UI
+	//鏇存柊UI
 	if (UUserWidget* Widget = QuestionWidget->GetWidget())
 	{
 		if (UWG_EnemyProblem* WG_EnemyProblem = Cast<UWG_EnemyProblem>(Widget))
