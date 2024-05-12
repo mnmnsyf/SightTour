@@ -3,9 +3,9 @@
 
 #include "AIFollowTargetEvaluator.h"
 #include "StateTreeExecutionContext.h"
-#include "NavigationSystem/Public/NavigationSystem.h"
+#include "NavigationSystem.h"
 #include "GameFramework/Character.h"
-#include "../StateTreeBlackBoardCom.h"
+#include "StateTree/StateTreeBlackBoardCom.h"
 #include "Kismet/GameplayStatics.h"
 
 void FAIFollowTargetEvaluator::Tick(FStateTreeExecutionContext& Context, const float DeltaTime) const

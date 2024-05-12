@@ -26,7 +26,7 @@ int32 USightTourGameInstance::AddLocalPlayer(ULocalPlayer* NewPlayer, FPlatformU
 	{
 		GetSubsystem<USightTourUIManager>()->NotifyPlayerAdded(NewPlayer);
 	}*/
-
+	
 
 	return ReturnVal;
 }

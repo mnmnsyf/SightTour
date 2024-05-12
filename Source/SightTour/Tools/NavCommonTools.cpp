@@ -1,6 +1,6 @@
 #include "NavCommonTools.h"
-#include "NavigationSystem/Public/NavigationSystem.h"
-#include "NavigationSystem/Public/NavigationPath.h"
+#include "NavigationSystem.h"
+#include "NavigationPath.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/World.h"
 

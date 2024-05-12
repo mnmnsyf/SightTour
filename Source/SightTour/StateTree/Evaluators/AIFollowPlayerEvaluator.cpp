@@ -3,9 +3,9 @@
 
 #include "AIFollowPlayerEvaluator.h"
 #include "StateTreeExecutionContext.h"
-#include "NavigationSystem/Public/NavigationSystem.h"
+#include "NavigationSystem.h"
 #include "GameFramework/Character.h"
-#include "../StateTreeBlackBoardCom.h"
+#include "StateTree/StateTreeBlackBoardCom.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 

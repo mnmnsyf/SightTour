@@ -24,12 +24,13 @@ bool USightTourLevelManager::LoadNewLevel(FName SceneName)
 		return false;
 	}
 
-	APlayerCameraManager* CameraManager = UGameplayStatics::GetPlayerCameraManager(this, 0);
-	check(CameraManager);
-
-	CameraManager->StartCameraFade(0.f, 1.f, 0.f, FLinearColor::Black, true, true);
+	//APlayerCameraManager* CameraManager = UGameplayStatics::GetPlayerCameraManager(this, 0);
+	//check(CameraManager);
+	//CameraManager->StartCameraFade(0.f, 1.f, 0.f, FLinearColor::Black, true, true);
 
 	//TODO:widget visible
 
+	UGameplayStatics::OpenLevel(this, SceneName, false, FString(TEXT("")));
 
+	return  false;
 }

@@ -5,10 +5,10 @@
 #include "StateTreeExecutionContext.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "NavigationSystem/Public/NavigationSystem.h"
-#include "NavigationSystem/Public/NavMesh/RecastNavMesh.h"
+#include "NavigationSystem.h"
+#include "NavMesh/RecastNavMesh.h"
 #include "Kismet/KismetSystemLibrary.h"
-#include "../Tools/NavCommonTools.h"
+#include "Tools/NavCommonTools.h"
 #include "Runtime/Engine/Classes/GameFramework/Controller.h"
 #include "Runtime/AIModule/Classes/AIController.h"
 

@@ -3,11 +3,11 @@
 
 #include "AIAttackTargetEvaluator.h"
 #include "StateTreeExecutionContext.h"
-#include "NavigationSystem/Public/NavigationSystem.h"
+#include "NavigationSystem.h"
 #include "GameFramework/Character.h"
-#include "../StateTreeBlackBoardCom.h"
+#include "StateTree/StateTreeBlackBoardCom.h"
 #include "Kismet/GameplayStatics.h"
-#include "../Enemy/EnemyCharacter.h"
+#include "Enemy/EnemyCharacter.h"
 
 void FAIAttackTargetEvaluator::Tick(FStateTreeExecutionContext& Context, const float DeltaTime) const
 {
