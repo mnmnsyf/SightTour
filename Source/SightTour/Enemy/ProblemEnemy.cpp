@@ -2,13 +2,14 @@
 
 
 #include "Enemy/ProblemEnemy.h"
-#include "Kismet/KismetMathLibrary.h"
-#include "TimerManager.h"
 #include "Level/ProblemGame/ProblemDefines.h"
 #include "Level/ProblemGame/Problem/Problem_Formula.h"
 #include "UI/Enemy/WG_EnemyProblem.h"
+#include "Player/SightTourCharacter.h"
+
+#include "TimerManager.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Components/WidgetComponent.h"
-#include "../SightTourCharacter.h"
 
 AProblemEnemy::AProblemEnemy(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)

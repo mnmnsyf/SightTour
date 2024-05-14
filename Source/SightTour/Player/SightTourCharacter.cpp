@@ -2,17 +2,20 @@
 
 #include "SightTourCharacter.h"
 #include "SightTourProjectile.h"
-#include "Animation/AnimInstance.h"
-#include "Camera/CameraComponent.h"
-#include "Components/CapsuleComponent.h"
-#include "EnhancedInputComponent.h"
-#include "UserSettings/EnhancedInputUserSettings.h"
-#include "EnhancedInputSubsystems.h"
 #include "TP_WeaponComponent.h"
 #include "Pickup/Equipment/EquipmentManagerComponent.h"
 #include "UI/Subsystem/SightTourUIManager.h"
 #include "UI/Player/WG_PlayerHUD.h"
 #include "UI/Common/WG_ItemName.h"
+
+#include "UserSettings/EnhancedInputUserSettings.h"
+#include "EnhancedInputSubsystems.h"
+#include "EnhancedInputComponent.h"
+
+#include "Animation/AnimInstance.h"
+#include "Camera/CameraComponent.h"
+#include "Components/CapsuleComponent.h"
+#include "NativeGameplayTags.h"
 
 //////////////////////////////////////////////////////////////////////////
 // ASightTourCharacter

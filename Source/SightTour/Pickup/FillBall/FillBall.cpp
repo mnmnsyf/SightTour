@@ -8,9 +8,9 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/GameplayStatics.h"
 #include "TP_WeaponComponent.h"
-#include "SightTourCharacter.h"
+#include "Player/SightTourCharacter.h"
 #include "Equipment/EquipmentManagerComponent.h"
-#include "../Enemy/ProblemEnemy.h"
+#include "Enemy/ProblemEnemy.h"
 
 AFillBall::AFillBall()
 {

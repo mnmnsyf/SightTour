@@ -8,7 +8,7 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/SphereComponent.h"
 #include "Kismet\GameplayStatics.h"
-#include "SightTourCharacter.h"
+#include "Player/SightTourCharacter.h"
 
 AProjectile::AProjectile()
 {

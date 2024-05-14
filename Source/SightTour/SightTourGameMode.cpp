@@ -1,7 +1,7 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "SightTourGameMode.h"
-#include "SightTourCharacter.h"
+#include "Player/SightTourCharacter.h"
 #include "UObject/ConstructorHelpers.h"
 
 ASightTourGameMode::ASightTourGameMode()

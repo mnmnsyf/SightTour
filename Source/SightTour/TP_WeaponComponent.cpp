@@ -1,6 +1,6 @@
 
 #include "TP_WeaponComponent.h"
-#include "SightTourCharacter.h"
+#include "Player/SightTourCharacter.h"
 #include "SightTourProjectile.h"
 #include "Pickup/Projectile/Projectile.h"
 #include "Interface/AttractInterface.h"
