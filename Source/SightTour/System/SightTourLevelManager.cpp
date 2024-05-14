@@ -5,6 +5,8 @@
 #include "SightTourGameInstance.h"
 #include "Camera/PlayerCameraManager.h"
 #include "Kismet/GameplayStatics.h"
+#include "Blueprint/UserWidget.h"
+#include "Runtime/MoviePlayer/Public/MoviePlayer.h"
 
 USightTourLevelManager* USightTourLevelManager::Instance = nullptr;
 
@@ -14,11 +16,11 @@ void USightTourLevelManager::Initialize(FSubsystemCollectionBase& Collection)
 	Super::Initialize(Collection);
 }
 
-bool USightTourLevelManager::LoadNewLevel(FName SceneName)
+bool USightTourLevelManager::LoadNewLevel(FName CurrentLevelName, FName NextLevelName, FString NextPlayerStartTag)
 {
 	//TODO:start acting
 
-	if (SceneName == OldSceneName)
+	if (NextLevelName == OldSceneName)
 	{
 		//TODO:end acting
 		return false;
@@ -29,8 +31,37 @@ bool USightTourLevelManager::LoadNewLevel(FName SceneName)
 	//CameraManager->StartCameraFade(0.f, 1.f, 0.f, FLinearColor::Black, true, true);
 
 	//TODO:widget visible
+	
 
-	UGameplayStatics::OpenLevel(this, SceneName, false, FString(TEXT("")));
+	UGameplayStatics::OpenLevel(this, NextLevelName, false, FString(TEXT("")));
 
 	return  false;
+}
+
+void USightTourLevelManager::BeginLoadingScreen(TSubclassOf<UUserWidget> LoadingWidgetClass)
+{
+	UE_LOG(LogTemp, Log, TEXT("USightTourLevelManager::BeginLoadingScreen------------->"));
+	if (!IsRunningDedicatedServer())
+	{
+
+		FLoadingScreenAttributes LoadingScreen;
+		//LoadingScreen.bAutoCompleteWhenLoadingCompletes = false;
+		//LoadingScreen.bMoviesAreSkippable = true;
+		//LoadingScreen.bWaitForManualStop = true;
+		//LoadingScreen.PlaybackType = EMoviePlaybackType::MT_Looped;
+		//引擎默认Widget
+		//LoadingScreen.WidgetLoadingScreen = FLoadingScreenAttributes::NewTestLoadingScreenWidget();
+
+		//自定义Widget
+		APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this->GetOuter()->GetWorld(), 0);
+		LoadingWidget = CreateWidget<UUserWidget>(PlayerController, LoadingWidgetClass);
+		if (LoadingWidget) {
+			TSharedPtr<SWidget> WidgetPtr = LoadingWidget->TakeWidget();
+			LoadingScreen.WidgetLoadingScreen = WidgetPtr;
+		}
+
+		//播放视频，视频文件需要放在Content\Movies下
+		//LoadingScreen.MoviePaths.Add("squad_intro_movie");
+		//TODO:GetMoviePlayer()->SetupLoadingScreen(LoadingScreen);
+	}
 }

@@ -20,6 +20,11 @@ public:
 	void Init() override;
 
 	static USightTourGameInstance* Get() { return Instance; }
+	static APlayerController* GetCurPlayerController(); 
+	static APawn* GetCurPawn();
+	// 增加一个蓝图可调用的接口
+	UFUNCTION(BlueprintPure, Category = "STGameInstance")
+	USightTourUIManager* GetMOUIManager() const { return SightTourUIManager; }
 
 	//~ Begin UGameInstance interface
 	int32 AddLocalPlayer(ULocalPlayer* NewPlayer, FPlatformUserId UserId) override;
@@ -33,6 +38,12 @@ public:
 	// Layout to add to the HUD
 	UPROPERTY(EditAnywhere, Category = UI, meta = (TitleProperty = "{LayerID} -> {LayoutClass}", Category = "UI"))
 	TArray<struct FSightTourHUDLayoutRequest> HUDLayout;
+
+private:
+	UPROPERTY()//使用UPROPERTY防止在通过OpenLevel切换关卡时被释放
+	class USightTourUIManager* SightTourUIManager = nullptr;
+
+
 
 private:
 	static USightTourGameInstance* Instance;

@@ -16,6 +16,26 @@ void USightTourGameInstance::Init()
 {
 	Instance = this;
 	Super::Init();
+
+	SightTourUIManager = USightTourUIManager::Get();
+}
+
+APlayerController* USightTourGameInstance::GetCurPlayerController()
+{
+	if (Instance == nullptr)
+		return nullptr;
+	UWorld* UEWorld = Instance->GetWorld();
+	if (UEWorld == nullptr)
+		return nullptr;
+	return UEWorld->GetFirstPlayerController();
+}
+
+APawn* USightTourGameInstance::GetCurPawn()
+{
+	APlayerController* CurPlayerController = GetCurPlayerController();
+	if (CurPlayerController == nullptr)
+		return false;
+	return CurPlayerController->GetPawn();
 }
 
 int32 USightTourGameInstance::AddLocalPlayer(ULocalPlayer* NewPlayer, FPlatformUserId UserId)

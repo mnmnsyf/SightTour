@@ -29,8 +29,11 @@ public:
 	//-------------------------关卡流程相关接口------------------------------------
 	
 	// 加载关卡
-	bool LoadNewLevel(FName SceneName);
+	bool LoadNewLevel(TObjectPtr<UUserWidget> LoadingWidget, FName CurrentLevelName, FName NextLevelName, FString NextPlayerStartTag);
 
+	//开始加载关卡时回调
+	UFUNCTION()
+	virtual void BeginLoadingScreen(TSubclassOf<UUserWidget> LoadingWidgetClass);
 
 private:
 	//-------------------------关卡数据相关------------------------------------
@@ -38,6 +41,10 @@ private:
 	FName OldSceneName;
 	//新场景名字
 	FName NewSceneName;
+
+	//关卡切换时显示的自定义Widget
+	UPROPERTY()
+	class UUserWidget* LoadingWidget = nullptr;
 
 private:
 	static USightTourLevelManager* Instance;
