@@ -1,18 +1,18 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
-
 
 #include "TP_WeaponComponent.h"
 #include "SightTourCharacter.h"
 #include "SightTourProjectile.h"
-#include "GameFramework/PlayerController.h"
-#include "Camera/PlayerCameraManager.h"
-#include "Kismet/GameplayStatics.h"
-#include "EnhancedInputComponent.h"
-#include "EnhancedInputSubsystems.h"
-#include "Kismet/KismetSystemLibrary.h"
-#include "SightTour.h"
+#include "Pickup/Projectile/Projectile.h"
 #include "Interface/AttractInterface.h"
 #include "Pickup/Equipment/EquipmentManagerComponent.h"
+#include "SightTour.h"
+
+#include "GameFramework/PlayerController.h"
+#include "Kismet/KismetSystemLibrary.h"
+#include "Kismet/GameplayStatics.h"
+#include "EnhancedInputSubsystems.h"
+#include "EnhancedInputComponent.h"
+#include "Camera/PlayerCameraManager.h"
 
 // Sets default values for this component's properties
 UTP_WeaponComponent::UTP_WeaponComponent()

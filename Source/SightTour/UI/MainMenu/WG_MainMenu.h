@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "CommonActivatableWidget.h"
-#include "WG_InventoryBar.generated.h"
+#include "WG_MainMenu.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class SIGHTTOUR_API UWG_InventoryBar : public UCommonActivatableWidget
+class SIGHTTOUR_API UWG_MainMenu : public UCommonActivatableWidget
 {
 	GENERATED_BODY()
 
@@ -21,23 +21,5 @@ public:
 protected:
 	void NativeConstruct() override;
 
-	UFUNCTION()
-	void OnBallPickup(bool bPickup, int32 InSlotIndex, FString BallContent, FName BallType);
-
-	UFUNCTION(BlueprintImplementableEvent)
-	void BP_OnBallSlotChange(int32 LastIndex, int32 NextIndex);
-
-public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player | HealthBar", meta = (AllowPrivateAccess = "true", AllowAbstract))
-	TSoftClassPtr<class UWG_BallSlot> BallSlotClass;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player | Ball", meta = (AllowPrivateAccess = "true"))
-	TMap<FName, class UTexture2D*> BallTypeIconMap;
-
-private:
-	UWG_BallSlot* LoadBallSlot();
-
-private:
-	UPROPERTY()
-	TArray<TObjectPtr<class UWG_BallSlot>> InventorySlot;
+	
 };

@@ -17,22 +17,3 @@ void UWG_PlayerHUD::SetHealth(float HealthPercent)
 		PB_Health->SetPercent(HealthPercent);
 	}
 }
-
-//class UWG_InventoryBar* UWG_PlayerHUD::LoadInventoryBar()
-//{
-//	if (ensure(!InventoryBarClass.IsNull()))
-//	{
-//		return nullptr;
-//	}
-//
-//	TSubclassOf<UWG_InventoryBar> WidgetClass = InventoryBarClass.LoadSynchronous();
-//
-//	if (ensure(WidgetClass && !WidgetClass->HasAnyClassFlags(CLASS_Abstract)))
-//	{
-//		UWG_InventoryBar* NewObject = CreateWidget<UWG_InventoryBar>(GetOwningLocalPlayer()->GetPlayerController(GetWorld()), WidgetClass);
-//
-//		return NewObject;
-//	}
-//
-//	return nullptr;
-//}

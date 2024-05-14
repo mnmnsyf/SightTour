@@ -5,13 +5,14 @@
 #include "CoreMinimal.h"
 #include "CommonActivatableWidget.h"
 #include "WG_InventoryBar.h"
+#include "UI/LyraHUDLayout.h"
 #include "WG_PlayerHUD.generated.h"
 
 /**
- * 
+ * 玩家HUD，显示玩家的生命值、物品栏等信息
  */
 UCLASS()
-class SIGHTTOUR_API UWG_PlayerHUD : public UCommonActivatableWidget
+class SIGHTTOUR_API UWG_PlayerHUD : public ULyraHUDLayout
 {
 	GENERATED_BODY()
 

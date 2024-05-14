@@ -74,7 +74,7 @@ public:
 	class UInputAction* AttractAction;
 
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = true))
-	TSubclassOf<AFillBall> BallClass = nullptr;
+	TSubclassOf<class AFillBall> BallClass = nullptr;
 
 
 public:
