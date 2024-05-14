@@ -12,7 +12,7 @@ public class SightTour : ModuleRules
             new string[] {
                 "SightTour",
                 "SightTour/Pickup",
-                "SightTour/StateTrees",
+                "SightTour/StateTree",
             }
         );
 
@@ -45,6 +45,7 @@ public class SightTour : ModuleRules
                 "GameSettings",
                 "CommonGame",
                 "CommonUser",
+                "MoviePlayer",
             }
         );
     }

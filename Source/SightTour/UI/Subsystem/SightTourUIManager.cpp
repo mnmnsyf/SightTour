@@ -22,7 +22,7 @@ void USightTourUIManager::NotifyPlayerAdded(ULocalPlayer* LocalPlayer)
 	}
 }
 
-void USightTourUIManager::PushStreamedContentToLayer_ForPlayer(const ULocalPlayer* LocalPlayer, FGameplayTag LayerName, TSoftClassPtr<UCommonActivatableWidget> WidgetClass)
+void USightTourUIManager::PushStreamedContentToLayer_ForPlayer(ULocalPlayer* LocalPlayer, FGameplayTag LayerName, TSoftClassPtr<UCommonActivatableWidget> WidgetClass)
 {
 	if (!ensure(LocalPlayer) || !ensure(!WidgetClass.IsNull()))
 	{
@@ -31,18 +31,24 @@ void USightTourUIManager::PushStreamedContentToLayer_ForPlayer(const ULocalPlaye
 
 	const bool bSuspendInputUntilComplete = true;
 
-	check(PrimaryLayout);
+	if (PrimaryLayout == nullptr)
+	{
+		CreatePrimaryLayout(LocalPlayer);
+	}
 	PrimaryLayout->PushWidgetToLayerStackAsync(LayerName, bSuspendInputUntilComplete, WidgetClass);
 }
 
-UCommonActivatableWidget* USightTourUIManager::PushContentToLayer_ForPlayer(const ULocalPlayer* LocalPlayer, FGameplayTag LayerName, TSubclassOf<UCommonActivatableWidget> WidgetClass)
+UCommonActivatableWidget* USightTourUIManager::PushContentToLayer_ForPlayer(ULocalPlayer* LocalPlayer, FGameplayTag LayerName, TSubclassOf<UCommonActivatableWidget> WidgetClass)
 {
 	if (!ensure(LocalPlayer) || !ensure(WidgetClass != nullptr))
 	{
 		return nullptr;
 	}
 
-	check(PrimaryLayout);
+	if (PrimaryLayout == nullptr)
+	{
+		CreatePrimaryLayout(LocalPlayer);
+	}
 	return PrimaryLayout->PushWidgetToLayerStack(LayerName, WidgetClass);
 }
 

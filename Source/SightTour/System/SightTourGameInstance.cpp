@@ -2,9 +2,9 @@
 
 
 #include "System/SightTourGameInstance.h"
-#include "../UI/SightTourHUD.h"
+#include "UI/SightTourHUD.h"
+#include "UI/Subsystem/SightTourUIManager.h"
 #include "Kismet/GameplayStatics.h"
-#include "../UI/Subsystem/SightTourUIManager.h"
 
 USightTourGameInstance* USightTourGameInstance::Instance = nullptr;
 
@@ -34,7 +34,7 @@ APawn* USightTourGameInstance::GetCurPawn()
 {
 	APlayerController* CurPlayerController = GetCurPlayerController();
 	if (CurPlayerController == nullptr)
-		return false;
+		return nullptr;
 	return CurPlayerController->GetPawn();
 }
 

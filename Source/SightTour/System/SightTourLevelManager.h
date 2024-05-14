@@ -29,11 +29,15 @@ public:
 	//-------------------------关卡流程相关接口------------------------------------
 	
 	// 加载关卡
-	bool LoadNewLevel(TObjectPtr<UUserWidget> LoadingWidget, FName CurrentLevelName, FName NextLevelName, FString NextPlayerStartTag);
+	UFUNCTION(BlueprintCallable, Category = "STLevelManager")
+	bool LoadNewLevel(FName CurrentLevelName, FName NextLevelName, FString NextPlayerStartTag);
 
 	//开始加载关卡时回调
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable, Category = "STLevelManager")
 	virtual void BeginLoadingScreen(TSubclassOf<UUserWidget> LoadingWidgetClass);
+
+private:
+	void SetGameModeAndPlayerLocationByPlayerStartTag(FString PlayerStartTag);
 
 private:
 	//-------------------------关卡数据相关------------------------------------

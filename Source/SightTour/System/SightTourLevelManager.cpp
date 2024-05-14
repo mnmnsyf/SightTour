@@ -3,10 +3,14 @@
 
 #include "System/SightTourLevelManager.h"
 #include "SightTourGameInstance.h"
+
 #include "Camera/PlayerCameraManager.h"
 #include "Kismet/GameplayStatics.h"
 #include "Blueprint/UserWidget.h"
-#include "Runtime/MoviePlayer/Public/MoviePlayer.h"
+
+#include "MoviePlayer.h"
+#include "GameFramework/GameModeBase.h"
+
 
 USightTourLevelManager* USightTourLevelManager::Instance = nullptr;
 
@@ -31,9 +35,11 @@ bool USightTourLevelManager::LoadNewLevel(FName CurrentLevelName, FName NextLeve
 	//CameraManager->StartCameraFade(0.f, 1.f, 0.f, FLinearColor::Black, true, true);
 
 	//TODO:widget visible
-	
-
-	UGameplayStatics::OpenLevel(this, NextLevelName, false, FString(TEXT("")));
+	FString TestLevelName = UGameplayStatics::GetCurrentLevelName(this, true);
+	FLatentActionInfo LatentActionInfo;
+	/*LatentActionInfo.CallbackTarget = this;
+	LatentActionInfo.ExecutionFunction = "SetGameModeAndPlayerLocationByPlayerStartTag";*/
+	//UGameplayStatics::LoadStreamLevel(this, NewSceneName, true, false, LatentActionInfo);
 
 	return  false;
 }
@@ -62,6 +68,22 @@ void USightTourLevelManager::BeginLoadingScreen(TSubclassOf<UUserWidget> Loading
 
 		//播放视频，视频文件需要放在Content\Movies下
 		//LoadingScreen.MoviePaths.Add("squad_intro_movie");
-		//TODO:GetMoviePlayer()->SetupLoadingScreen(LoadingScreen);
+		//GetMoviePlayer()->SetupLoadingScreen(LoadingScreen);
 	}
+}
+
+void USightTourLevelManager::SetGameModeAndPlayerLocationByPlayerStartTag(FString PlayerStartTag)
+{
+	/*APlayerController* PC = USightTourGameInstance::Get()->GetCurPlayerController();
+	PC->SetInputMode(FInputModeGameOnly());
+
+	AGameModeBase* GameMode = UGameplayStatics::GetGameMode(this);
+	AActor* PlayerStartActor = GameMode->FindPlayerStart(PC, PlayerStartTag);
+
+	APawn* Pawn = USightTourGameInstance::Get()->GetCurPawn();
+	Pawn->TeleportTo(PlayerStartActor->GetActorLocation(), PlayerStartActor->GetActorRotation());
+
+	FLatentActionInfo LatentActionInfo;
+	LatentActionInfo.ExecutionFunction = 
+	UKismetSystemLibrary::Delay(this, 0.1f, FLatentActionInfo)*/
 }
