@@ -53,7 +53,7 @@ void ABigLottery::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor*
 
 void ABigLottery::OnBoxEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	if (OtherActor)
+	/*if (OtherActor)
 	{
 		if (UBigLotteryComponent* BigLotteryComponent = OtherActor->GetComponentByClass<UBigLotteryComponent>())
 		{
@@ -63,6 +63,6 @@ void ABigLottery::OnBoxEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* O
 				BigLotteryDelegate.ExecuteIfBound(bTriggered);
 			}
 		}
-	}
+	}*/
 }
 

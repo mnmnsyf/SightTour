@@ -36,12 +36,18 @@ protected:
 
 	void TriggerLottery();
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void BP_TriggerLottery();
+
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TArray<TObjectPtr<ABigLottery>> BigLotteries;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	float TriggeredDelayTime = 3.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true", DisplayName = "机关通过后开启的下一个关卡机关，必须实现ILevelInterface接口"))
+	TObjectPtr<AActor> NextLevelActor = nullptr;
 
 private:
 	FTimerHandle TriggerTimer;

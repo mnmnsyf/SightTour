@@ -55,6 +55,10 @@ void ABigLotteryManager::Tick(float DeltaTime)
 				UKismetSystemLibrary::DrawDebugArrow(GetWorld(), GetActorLocation(), BigLottery->GetActorLocation(), 10.f, FColor::Cyan, -1, 2.f);
 			}
 		}
+		if (NextLevelActor)
+		{
+			UKismetSystemLibrary::DrawDebugArrow(GetWorld(), GetActorLocation(), NextLevelActor->GetActorLocation(), 10.f, FColor::Green, -1, 2.f);
+		}
 	}
 #endif
 }
@@ -93,4 +97,5 @@ void ABigLotteryManager::OnBigLotteryTriggered(bool bTriggered)
 void ABigLotteryManager::TriggerLottery()
 {
 	bTriggerLottery = true;
+	BP_TriggerLottery();
 }
