@@ -68,7 +68,7 @@ void USightTourLevelManager::BeginLoadingScreen(TSubclassOf<UUserWidget> Loading
 
 		//播放视频，视频文件需要放在Content\Movies下
 		//LoadingScreen.MoviePaths.Add("squad_intro_movie");
-		//GetMoviePlayer()->SetupLoadingScreen(LoadingScreen);
+		GetMoviePlayer()->SetupLoadingScreen(LoadingScreen);
 	}
 }
 
