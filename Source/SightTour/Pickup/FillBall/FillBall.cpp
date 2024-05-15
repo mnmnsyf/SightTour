@@ -222,11 +222,10 @@ void AFillBall::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimiti
 		if (FFillBallBase* BallConfig = FillBallConfig.GetMutablePtr<FFillBallBase>())
 		{
 			ProblemEnemy->UpdateQuestion(BallConfig->GetActualValue());
-			bOpenHitCheck = false;
 		}
 	}
 
-	//GEngine->AddOnScreenDebugMessage(-1, 1500.0f, FColor::Red, TEXT("Projectile hit"));
+	bOpenHitCheck = false;
 }
 
 void AFillBall::BallSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
