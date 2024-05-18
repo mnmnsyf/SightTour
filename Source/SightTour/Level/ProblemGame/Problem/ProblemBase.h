@@ -3,6 +3,19 @@
 #pragma once
 
 #include "ProblemBase.generated.h"
+struct FInstancedStruct;
+
+USTRUCT(BlueprintType)
+struct FProblemConfig : public FTableRowBase
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, DisplayName = "敌人ID")
+	FName EnemyID;
+
+	UPROPERTY(EditAnywhere, DisplayName = "问题", Meta = (ExcludeBaseStruct, BaseStruct = "/Script/SightTour.ProblemBase"))
+	TArray<FInstancedStruct> Problems;
+};
 
 USTRUCT()
 struct SIGHTTOUR_API FProblemBase
@@ -47,4 +60,10 @@ public:
 
 	UPROPERTY(EditAnywhere, DisplayName = "伤害值")
 	float DamageValue =	10.f;
+
+	UPROPERTY(EditAnywhere, DisplayName = "CorrectAnswer", Meta = (ExcludeBaseStruct, BaseStruct = "/Script/SightTour.PickableItem"))
+	TArray<FInstancedStruct> CorrectAnswer;
+
+	UPROPERTY(EditAnywhere, DisplayName = "WrongAnswer", Meta = (ExcludeBaseStruct, BaseStruct = "/Script/SightTour.PickableItem"))
+	TArray<FInstancedStruct> WrongAnswer;
 };

@@ -8,9 +8,10 @@
 #include "PickupItemDefines.generated.h"
 
 class APickupItemBase;
+class UStaticMesh;
 
 USTRUCT(BlueprintType)
-struct FPickableConfig : public FTableRowBase
+struct SIGHTTOUR_API FPickableConfig : public FTableRowBase
 {
 	GENERATED_BODY()
 
@@ -19,7 +20,7 @@ struct FPickableConfig : public FTableRowBase
 };
 
 USTRUCT(meta = (Hidden))
-struct FPickableItem
+struct SIGHTTOUR_API FPickableItem
 {
 	GENERATED_BODY()
 
@@ -31,6 +32,9 @@ struct FPickableItem
 	{
 		return this->ItemTypeName == A.ItemTypeName;
 	}
+
+	UPROPERTY(EditDefaultsOnly, Category = PickableItem, meta = (AllowedClasses = "/Script/Engine.MaterialInstance", DisplayName = "Material"))
+	FSoftObjectPath Material;
 
 	FName ItemTypeName;
 };

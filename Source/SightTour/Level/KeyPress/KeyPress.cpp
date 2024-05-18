@@ -30,19 +30,7 @@ void AKeyPress::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (!bStartPlay)
-	{
-		return;
-	}
-
-	RemainTime -= DeltaTime;
-	if (RemainTime > 0)
-	{
-		return;
-	}
-	RemainTime = UpdateTime;
-
-	UpdateNextKey();
+	UpdateNextKey(DeltaTime);
 }
 
 bool AKeyPress::InitConfig()
@@ -58,7 +46,7 @@ bool AKeyPress::InitConfig()
 	{
 		for (auto& EachConfig : KeyConfig)
 		{
-			if (EachConfig.IA.IsNull() || IsValid(EachConfig.Image))
+			if (!EachConfig.IA || IsValid(EachConfig.Image))
 			{
 				continue;
 			}
@@ -80,28 +68,29 @@ bool AKeyPress::InitConfig()
 	return false;
 }
 
-bool AKeyPress::UpdateNextKey()
+bool AKeyPress::UpdateNextKey(float DeltaTime)
 {
+	if (!bStartPlay)
+	{
+		return false;
+	}
+
+	RemainTime -= DeltaTime;
+	if (RemainTime > 0)
+	{
+		return false;
+	}
+	RemainTime = UpdateTime;
+
 	APlayerController* PC = USightTourGameInstance::Get()->GetCurPlayerController();
 	if (!PC)
 	{
 		return false;
 	}
 
-	if (!KeyPressUI && ensure(KeyPressClass))
-	{
-		KeyPressUI = CreateWidget<UWG_KeyPress>(PC, KeyPressClass);
-		if(KeyPressUI)
-			KeyPressUI->AddToPlayerScreen(1000);
-	}
-	if (!KeyPressUI)
-	{
-		return false;
-	}
-
 	int32 RandomIndex = FMath::RandRange(0, KeyConfig.Num() - 1);
 	FKeyPressConfig& NewContent = KeyConfig[RandomIndex];
-	if (NewContent.IA.IsNull() || IsValid(NewContent.Image))
+	if (!NewContent.IA || IsValid(NewContent.Image))
 	{
 		return false;
 	}
@@ -110,8 +99,8 @@ bool AKeyPress::UpdateNextKey()
 	check(IA);
 
 	//update UI
-	KeyPressUI->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
-	KeyPressUI->SetContent(IA->ActionDescription, NewContent.Image);
+	GetKeyPressUI()->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+	GetKeyPressUI()->SetContent(IA->ActionDescription, NewContent.Image);
 	
 	//Set Timer
 	GetWorldTimerManager().SetTimer(TimerHandle, this, &AKeyPress::WrongCallback, CheckTime, false);
@@ -147,5 +136,23 @@ void AKeyPress::WrongCallback()
 
 	//remove TimerHandle
 	GetWorldTimerManager().ClearTimer(TimerHandle);
+}
+
+TObjectPtr<UWG_KeyPress> AKeyPress::GetKeyPressUI()
+{
+	APlayerController* PC = USightTourGameInstance::Get()->GetCurPlayerController();
+	if (!PC)
+	{
+		return nullptr;
+	}
+
+	if (!KeyPressUI && ensure(KeyPressClass))
+	{
+		KeyPressUI = CreateWidget<UWG_KeyPress>(PC, KeyPressClass);
+		if (KeyPressUI)
+			KeyPressUI->AddToPlayerScreen(1000);
+	}
+	
+	return KeyPressUI;
 }
 

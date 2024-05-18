@@ -2,7 +2,7 @@
 
 
 #include "Enemy/ProblemEnemy.h"
-#include "Level/ProblemGame/ProblemDefines.h"
+#include "Level/ProblemGame/Problem/ProblemBase.h"
 #include "Level/ProblemGame/Problem/Problem_Formula.h"
 #include "UI/Enemy/WG_EnemyProblem.h"
 #include "Player/SightTourCharacter.h"
@@ -127,6 +127,9 @@ void AProblemEnemy::UpdateNextQuestion()
 			Problem->InitProblem();
 			UpdateQuestionUI(Problem->GetUIShowList());
 		}
+
+		//更新地图上的小球
+		UpdateProblemDelegate.ExecuteIfBound(*Problem);
 	}
 }
 

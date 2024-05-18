@@ -136,6 +136,21 @@ void AFillBall::OnEquipped()
 	}
 }
 
+void AFillBall::SetProjectileMeshMaterial(FSoftObjectPath MaterialPath)
+{
+	UMaterialInstance* Material = Cast<UMaterialInstance>(MaterialPath.TryLoad());
+	if (ProjectileMesh && ensure(Material))
+	{
+		UMaterialInstanceDynamic* MaterialInstance = UMaterialInstanceDynamic::Create(Material, ProjectileMesh);
+		ProjectileMesh->SetMaterial(0, MaterialInstance);
+	}
+}
+
+void AFillBall::SetProjectileMesh(TObjectPtr<UStaticMesh> DisplayMesh)
+{
+	ProjectileMesh->SetStaticMesh(DisplayMesh);
+}
+
 bool AFillBall::GeSpawnDirection(FVector& OutHitLocation)
 {
 	if (!OwnerWeapon)

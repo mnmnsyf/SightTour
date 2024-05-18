@@ -10,9 +10,7 @@
 struct FProblemBase;
 class UWidgetComponent;
 
-/**
- * 
- */
+DECLARE_DELEGATE_OneParam(FUpdateProblemDelegate, FProblemBase);
 
 UCLASS()
 class SIGHTTOUR_API AProblemEnemy : public AEnemyCharacter
@@ -30,6 +28,9 @@ public:
 	void UpdateNextQuestion();
 
 	void UpdateQuestionUI(const TArray<FString>& ShowList);
+
+public:
+	FUpdateProblemDelegate UpdateProblemDelegate;
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (Category = "问题", DisplayName = "问题配置", RowType = "/Script/SightTour.ProblemConfig"))

@@ -42,6 +42,12 @@ public:
 
 	void OnEquipped() override;
 
+	FORCEINLINE void SetFillBallConfig(FInstancedStruct& NewConfig) { FillBallConfig = NewConfig; }
+
+	// 设置ProjectileMesh的材质
+	void SetProjectileMeshMaterial(FSoftObjectPath Material);
+
+	void SetProjectileMesh(TObjectPtr<UStaticMesh> DisplayMesh);
 
 	//获取枪口发射命中位置
 	bool GeSpawnDirection(FVector& OutHitDirection);

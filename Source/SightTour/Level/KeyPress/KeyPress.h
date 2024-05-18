@@ -34,12 +34,14 @@ public:
 
 	bool InitConfig();
 
-	bool UpdateNextKey();
+	bool UpdateNextKey(float DeltaTime);
 
 	void CheckAnswerKey(const FInputActionInstance& InputActionInstance);
 
 	void WrongCallback();
 
+private:
+	TObjectPtr<class UWG_KeyPress> GetKeyPressUI();
 public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = KeyPress, meta = (DisplayName = "UpdateTime"))
 	float UpdateTime = 5.0f;
