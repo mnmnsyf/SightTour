@@ -212,7 +212,7 @@ void ASightTourCharacter::ReduceHealth(const float ReduceValue)
 	UpdateHealthBar();
 
 	FString DebugMsg = FString::Printf(TEXT("Player current health %.0f"), CurrentHealth);
-	GEngine->AddOnScreenDebugMessage(-1, 1500.0f, FColor::Cyan, DebugMsg);
+	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Cyan, DebugMsg);
 }
 
 void ASightTourCharacter::UpdateHealthBar()

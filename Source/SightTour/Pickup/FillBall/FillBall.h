@@ -49,6 +49,7 @@ public:
 	//获取视口发射命中位置
 	bool TraceUnderCrosshair(FVector& OutHitLocation);
 
+	//这个接口好像用不到了
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 

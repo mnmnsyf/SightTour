@@ -230,6 +230,11 @@ void AFillBall::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimiti
 
 void AFillBall::BallSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	if (!bOpenHitCheck)
+	{
+		return;
+	}
+
 	if (OtherActor)
 	{
 		if (AProblemEnemy* ProblemEnemy = Cast<AProblemEnemy>(OtherActor))
@@ -242,6 +247,8 @@ void AFillBall::BallSphereOverlap(UPrimitiveComponent* OverlappedComponent, AAct
 			}
 		}
 	}
+
+	bOpenHitCheck = false;
 }
 
 void AFillBall::PerMove()

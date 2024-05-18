@@ -35,6 +35,9 @@ private:
 
 	UFUNCTION()
 	void OnBoxEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+	
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE bool GetIsTrigged() { return bTriggered; };
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
