@@ -16,14 +16,19 @@ class SIGHTTOUR_API UWG_GameFinish : public UCommonActivatableWidget
 
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	class UTextBlock* T_KeyName;
+	class UTextBlock* T_Description;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	class UImage* I_Image;
+	class UImage* I_Background;
 
 public:
-	void NativeConstruct() override;
-	 
-	UFUNCTION()
-	void SetContent(FText NewKeyName, class UTexture2D* NewImage);
+	UWG_GameFinish(const FObjectInitializer& ObjectInitializer);
+
+	void NativeOnInitialized() override;
+
+protected:
+	void HandleSpacebarAction();
+
+	UPROPERTY(EditDefaultsOnly)
+	TSoftClassPtr<UCommonActivatableWidget> SpacebarClass;
 };

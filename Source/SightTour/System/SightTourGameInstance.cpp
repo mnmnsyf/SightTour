@@ -77,9 +77,9 @@ void USightTourGameInstance::FinishCurrentLevel()
 		InnerLoadNextLevel();
 	}
 	//TODO:游戏结束
-	else if (ensure(!GameFinishClass.IsNull()))
+	else
 	{
-		SightTourUIManager->PushStreamedContentToLayer_ForPlayer(GetCurPlayerController()->GetLocalPlayer(), GameFinish, GameFinishClass);
+		OnGameFinish();
 	}
 
 	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, FString("USightTourGameInstance::FinishCurrentLevel"));
@@ -122,6 +122,14 @@ void USightTourGameInstance::TransitToNextLevel()
 void USightTourGameInstance::RestartCurrentLevel()
 {
 	InnerReloadCurrentLevel();
+}
+
+void USightTourGameInstance::OnGameFinish()
+{
+	if (ensure(!GameFinishClass.IsNull()))
+	{
+		SightTourUIManager->PushStreamedContentToLayer_ForPlayer(GetCurPlayerController()->GetLocalPlayer(), GameFinish, GameFinishClass);
+	}
 }
 
 void USightTourGameInstance::InnerReloadCurrentLevel()

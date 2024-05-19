@@ -46,6 +46,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void RestartCurrentLevel();
 
+	UFUNCTION(BlueprintCallable, Category = "SightTour")
+	void OnGameFinish();
 
 private:
 	UFUNCTION(BlueprintCallable, Category = "SightTour")
