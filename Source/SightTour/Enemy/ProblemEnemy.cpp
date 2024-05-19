@@ -10,6 +10,7 @@
 #include "TimerManager.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Components/WidgetComponent.h"
+#include "System/SightTourGameInstance.h"
 
 AProblemEnemy::AProblemEnemy(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -21,27 +22,49 @@ AProblemEnemy::AProblemEnemy(const FObjectInitializer& ObjectInitializer)
 void AProblemEnemy::BeginPlay()
 {
 	Super::BeginPlay();
+}
 
+bool AProblemEnemy::InitParam(FName EnemyID)
+{
+	Super::InitParam(EnemyID);
+
+	//TODO:根据EnemyID初始化问题配置
 	InitProblemConfig();
 
 	FTimerDelegate NextTimer;
 	NextTimer.BindUObject(this, &AProblemEnemy::UpdateNextQuestion);
 	GetWorldTimerManager().SetTimerForNextTick(NextTimer);
+
+	return true;
 }
+
 
 void AProblemEnemy::InitProblemConfig()
 {
-	if (!ProblemConfigRowHandle.IsNull())
+	USightTourGameInstance* GameInstance = USightTourGameInstance::Get();
+	if (IsValid(ProblemConfigTable) && IsValid(GameInstance))
 	{
 		FString ContextStr;
-		if (FProblemConfig* ProblemConfig = ProblemConfigRowHandle.GetRow<FProblemConfig>(ContextStr))
-		{
-			Problems = ProblemConfig->Problems;
+		TArray<FProblemConfig*> ProblemConfigs;
+		ProblemConfigTable->GetAllRows<FProblemConfig>(ContextStr, ProblemConfigs);
 
-			if (Problems.Num())
+		if (ProblemConfigs.IsValidIndex(GameInstance->ProblemEnemyIndex))
+		{
+			if (FProblemConfig* ProblemConfig = ProblemConfigs[GameInstance->ProblemEnemyIndex])
 			{
-				CurrentProblem = Problems[0];
+				Problems = ProblemConfig->Problems;
+
+				if (Problems.Num())
+				{
+					CurrentProblem = Problems[0];
+				}
+
+				GameInstance->ProblemEnemyIndex++;
 			}
+		}
+		else
+		{
+			// Game Success
 		}
 	}
 }
@@ -145,3 +168,4 @@ void AProblemEnemy::UpdateQuestionUI(const TArray<FString>& ShowList)
 		}
 	}
 }
+

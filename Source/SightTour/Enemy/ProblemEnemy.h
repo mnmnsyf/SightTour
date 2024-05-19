@@ -21,8 +21,13 @@ protected:
 	void BeginPlay() override;
 
 public:
+	//------------------------------ 内部初始化接口 --------------------------------------------
+	bool InitParam(FName EnemyID) override;
+
 	void InitProblemConfig();
 
+public:
+	//------------------------------ 问题流程接口 --------------------------------------------
 	void UpdateQuestion(FString AnswerStr);
 
 	void UpdateNextQuestion();
@@ -34,7 +39,7 @@ public:
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (Category = "问题", DisplayName = "问题配置", RowType = "/Script/SightTour.ProblemConfig"))
-	FDataTableRowHandle ProblemConfigRowHandle;
+	TObjectPtr<UDataTable> ProblemConfigTable;
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (Category = "问题", AllowPrivateAccess = true))

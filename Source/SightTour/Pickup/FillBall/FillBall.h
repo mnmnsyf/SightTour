@@ -42,7 +42,7 @@ public:
 
 	void OnEquipped() override;
 
-	FORCEINLINE void SetFillBallConfig(FInstancedStruct& NewConfig) { FillBallConfig = NewConfig; }
+	void SetFillBallConfig(FInstancedStruct& NewConfig);
 
 	// 设置ProjectileMesh的材质
 	void SetProjectileMeshMaterial(FSoftObjectPath Material);

@@ -2,6 +2,8 @@
 
 
 #include "Enemy/EnemyCharacter.h"
+#include "System/SightTourGameInstance.h"
+
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundCue.h"
 #include "Runtime/Engine/Classes/Animation/AnimMontage.h"
@@ -20,8 +22,7 @@ void AEnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//开始游戏后将敌人当前生命值和最大生命值相匹配
-	ResetDefaultHealth();
+	InitParam(FName());
 }
 
 // Called every frame
@@ -29,6 +30,14 @@ void AEnemyCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+bool AEnemyCharacter::InitParam(FName EnemyID)
+{
+	//开始游戏后将敌人当前生命值和最大生命值相匹配
+	ResetDefaultHealth();
+
+	return true;
 }
 
 void AEnemyCharacter::SetCharacterMoveByForce(const FVector& ForceDir)
@@ -42,12 +51,14 @@ void AEnemyCharacter::ReduceHealth(const float ReduceValue)
 
 	if (CurrentHealth <= 0)
 	{
+		BP_OnEnemyDeath();
 		//TODO:播放死亡动画&音效
-		SetLifeSpan(5.0f);
+		SetLifeSpan(3.0f);
+		//USightTourGameInstance::Get()->InnerInitLevelData();
 	}
 
 	FString DebugMsg = FString::Printf(TEXT("Enemy current health %.0f"), CurrentHealth);
-	GEngine->AddOnScreenDebugMessage(-1, 1500.0f, FColor::Red, DebugMsg);
+	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, DebugMsg);
 }
 
 UAnimMontage* AEnemyCharacter::PlayAnimAsMontage(UAnimSequence* Anim, const float PlayRate)

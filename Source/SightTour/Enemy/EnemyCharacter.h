@@ -16,17 +16,18 @@ class SIGHTTOUR_API AEnemyCharacter : public ACharacter
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this character's properties
 	AEnemyCharacter(const FObjectInitializer& ObjectInitializer);
 
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 public:	
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	//初始化配置
+	virtual bool InitParam(FName EnemyID);
+
+public:
 	//向移动添加力的方向 forceDir传单位方向
 	void SetCharacterMoveByForce(const FVector& ForceDir);
 
@@ -40,6 +41,9 @@ public:
 	UAnimMontage* PlayAnimAsMontage(class UAnimSequence* Anim, const float PlayRate = 1.0f);
 
 	FName GetRandomAttackSectionName();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void BP_OnEnemyDeath();
 
 private:
 	/** 敌人当前生命值，蓝图不可修改 */

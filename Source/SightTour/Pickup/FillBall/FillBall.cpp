@@ -136,6 +136,15 @@ void AFillBall::OnEquipped()
 	}
 }
 
+void AFillBall::SetFillBallConfig(FInstancedStruct& NewConfig)
+{
+	FillBallConfig = NewConfig;
+	if (FFillBallBase* BallConfig = FillBallConfig.GetMutablePtr<FFillBallBase>())
+	{
+		BallConfig->Init();
+	}
+}
+
 void AFillBall::SetProjectileMeshMaterial(FSoftObjectPath MaterialPath)
 {
 	UMaterialInstance* Material = Cast<UMaterialInstance>(MaterialPath.TryLoad());

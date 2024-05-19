@@ -15,6 +15,8 @@ class UAnimMontage;
 class USoundBase;
 class UEquipmentManagerComponent;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSTHealth_DeathEvent, AActor*, OwningActor);
+
 UCLASS(config=Game)
 class ASightTourCharacter : public ACharacter
 {
@@ -40,6 +42,15 @@ public:
 	bool GetHasRifle();
 
 public:
+	FSTHealth_DeathEvent OnDeathBegin;
+
+	UFUNCTION()
+	virtual void OnDeathStarted();
+	UFUNCTION()
+	virtual void OnDeathFinished();
+	void DisableMovementAndCollision();
+	void DestroyDueToDeath();
+
 	//扣血
 	void ReduceHealth(const float ReduceValue);
 

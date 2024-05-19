@@ -7,6 +7,7 @@
 #include "UI/Subsystem/SightTourUIManager.h"
 #include "UI/Player/WG_PlayerHUD.h"
 #include "UI/Common/WG_ItemName.h"
+#include "System/SightTourGameInstance.h"
 
 #include "UserSettings/EnhancedInputUserSettings.h"
 #include "EnhancedInputSubsystems.h"
@@ -199,6 +200,48 @@ bool ASightTourCharacter::GetHasRifle()
 	return bHasRifle;
 }
 
+void ASightTourCharacter::OnDeathStarted()
+{
+	USightTourGameInstance::Get()->FinishCurrentLevel();
+
+	DisableMovementAndCollision();
+
+	OnDeathFinished();
+
+	/*FTimerHandle Timer;
+	GetWorldTimerManager().SetTimer(Timer, this, ASightTourCharacter::OnDeathFinished, 2.f, false);*/
+}
+
+void ASightTourCharacter::OnDeathFinished()
+{
+	GetWorld()->GetTimerManager().SetTimerForNextTick(this, &ASightTourCharacter::DestroyDueToDeath);
+}
+
+void ASightTourCharacter::DisableMovementAndCollision()
+{
+	if (Controller)
+	{
+		Controller->SetIgnoreMoveInput(true);
+	}
+
+	UCapsuleComponent* CapsuleComp = GetCapsuleComponent();
+	check(CapsuleComp);
+	CapsuleComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	CapsuleComp->SetCollisionResponseToAllChannels(ECR_Ignore);
+
+	UCharacterMovementComponent* MoveComp = GetCharacterMovement();
+	MoveComp->StopMovementImmediately();
+	MoveComp->DisableMovement();
+}
+
+void ASightTourCharacter::DestroyDueToDeath()
+{
+	DetachFromControllerPendingDestroy();
+	SetLifeSpan(0.1f);
+
+	SetActorHiddenInGame(true);
+}
+
 void ASightTourCharacter::ReduceHealth(const float ReduceValue)
 {
 	CurrentHealth -= ReduceValue;
@@ -207,6 +250,8 @@ void ASightTourCharacter::ReduceHealth(const float ReduceValue)
 	{
 		//TODO:播放死亡动画&音效
 		//SetLifeSpan(5.0f);
+		OnDeathStarted();
+		OnDeathBegin.Broadcast(this);
 	}
 
 	UpdateHealthBar();
