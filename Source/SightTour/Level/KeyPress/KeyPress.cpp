@@ -46,7 +46,7 @@ bool AKeyPress::InitConfig()
 	{
 		for (auto& EachConfig : KeyConfig)
 		{
-			if (!EachConfig.IA || IsValid(EachConfig.Image))
+			if (EachConfig.IA.IsNull() || !IsValid(EachConfig.Image))
 			{
 				continue;
 			}
@@ -90,14 +90,13 @@ bool AKeyPress::UpdateNextKey(float DeltaTime)
 
 	int32 RandomIndex = FMath::RandRange(0, KeyConfig.Num() - 1);
 	FKeyPressConfig& NewContent = KeyConfig[RandomIndex];
-	if (!NewContent.IA || IsValid(NewContent.Image))
+	if (NewContent.IA.IsNull() || !IsValid(NewContent.Image))
 	{
 		return false;
 	}
 
 	UInputAction* IA = NewContent.IA.LoadSynchronous();
 	check(IA);
-
 	//update UI
 	GetKeyPressUI()->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
 	GetKeyPressUI()->SetContent(IA->ActionDescription, NewContent.Image);
