@@ -11,7 +11,7 @@ class ULocalPlayer;
 
 namespace SightTour::ErrorMessages
 {
-	static const FText UnknownMappingName = LOCTEXT("SightTourErrors_UnknownMappingName", "Unknown Mapping");
+	static const FText UnknownFusionName = LOCTEXT("SightTourErrors_UnknownFusionName", "Unknown Fusion");
 }
 
 USightTourSettingKeyboardInput::USightTourSettingKeyboardInput()

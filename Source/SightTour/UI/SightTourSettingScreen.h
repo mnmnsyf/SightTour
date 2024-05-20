@@ -28,9 +28,15 @@ protected:
 
 	virtual void OnSettingsDirtyStateChanged_Implementation(bool bSettingsDirty) override;
 	
+
+	void NativeOnActivated() override;
+
+
+	void NativeOnDeactivated() override;
+
 protected:
-	/*UPROPERTY(BlueprintReadOnly, Category = Input, meta = (BindWidget, OptionalWidget = true, AllowPrivateAccess = true))
-	TObjectPtr<ULyraTabListWidgetBase> TopSettingsTabs;*/
+	UPROPERTY(BlueprintReadOnly, Category = Input, meta = (BindWidget, OptionalWidget = true, AllowPrivateAccess = true))
+	TObjectPtr<ULyraTabListWidgetBase> TopSettingsTabs;
 	
 	UPROPERTY(EditDefaultsOnly)
 	FDataTableRowHandle BackInputActionData;

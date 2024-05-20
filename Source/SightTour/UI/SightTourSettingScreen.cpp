@@ -10,7 +10,7 @@
 
 class UGameSettingRegistry;
 
-void USightTourSettingScreen::NativeOnInitialized()
+void USightTourSettingScreen::NativeOnInitialized() 
 {
 	Super::NativeOnInitialized();
 
@@ -51,6 +51,28 @@ void USightTourSettingScreen::HandleApplyAction()
 void USightTourSettingScreen::HandleCancelChangesAction()
 {
 	CancelChanges();
+}
+
+void USightTourSettingScreen::NativeOnActivated()
+{
+	Super::NativeOnActivated();
+	if (GetOwningPlayer())
+	{
+		FInputModeUIOnly InputModeUIOnly;
+		GetOwningPlayer()->SetInputMode(InputModeUIOnly);
+		GetOwningPlayer()->SetShowMouseCursor(true);
+	}
+}
+
+void USightTourSettingScreen::NativeOnDeactivated()
+{
+	Super::NativeOnDeactivated();
+	if (GetOwningPlayer())
+	{
+		FInputModeGameOnly InputModeGameOnly;
+		GetOwningPlayer()->SetInputMode(InputModeGameOnly);
+		GetOwningPlayer()->SetShowMouseCursor(false);
+	}
 }
 
 void USightTourSettingScreen::OnSettingsDirtyStateChanged_Implementation(bool bSettingsDirty)

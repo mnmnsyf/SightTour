@@ -22,11 +22,6 @@ public:
 
 	FText GetKeyTextFromSlot(const EPlayerMappableKeySlot InSlot) const;
 
-	/*UE_DEPRECATED(5.3, "GetPrimaryKeyText has been deprecated, please use GetKeyTextFromSlot instead")
-		FText GetPrimaryKeyText() const;
-	UE_DEPRECATED(5.3, "GetSecondaryKeyText has been deprecated, please use GetKeyTextFromSlot instead")
-		FText GetSecondaryKeyText() const;*/
-
 	virtual void StoreInitial() override;
 	virtual void ResetToDefault() override;
 	virtual void RestoreToInitial() override;

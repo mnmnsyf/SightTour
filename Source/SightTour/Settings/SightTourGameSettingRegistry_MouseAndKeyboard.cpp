@@ -10,7 +10,7 @@
 #include "GameSettingValueScalarDynamic.h"
 #include "SightTourGameSettingRegistry.h"
 #include "SightTourSettingsLocal.h"
-//#include "LyraSettingsShared.h"
+//#include "SightTourSettingsShared.h"
 //#include "Player/LyraLocalPlayer.h"
 #include "CommonLocalPlayer.h"
 #include "PlayerMappableInputConfig.h"
@@ -53,7 +53,7 @@ UGameSettingCollection* USightTourGameSettingRegistry::InitializeMouseAndKeyboar
 
 			Setting->SetDynamicGetter(GET_SHARED_SETTINGS_FUNCTION_PATH(GetMouseSensitivityX));
 			Setting->SetDynamicSetter(GET_SHARED_SETTINGS_FUNCTION_PATH(SetMouseSensitivityX));
-			Setting->SetDefaultValue(GetDefault<ULyraSettingsShared>()->GetMouseSensitivityX());
+			Setting->SetDefaultValue(GetDefault<USightTourSettingsShared>()->GetMouseSensitivityX());
 			Setting->SetDisplayFormat(UGameSettingValueScalarDynamic::RawTwoDecimals);
 			Setting->SetSourceRangeAndStep(TRange<double>(0, 10), 0.01);
 			Setting->SetMinimumLimit(0.01);
@@ -71,7 +71,7 @@ UGameSettingCollection* USightTourGameSettingRegistry::InitializeMouseAndKeyboar
 
 			Setting->SetDynamicGetter(GET_SHARED_SETTINGS_FUNCTION_PATH(GetMouseSensitivityY));
 			Setting->SetDynamicSetter(GET_SHARED_SETTINGS_FUNCTION_PATH(SetMouseSensitivityY));
-			Setting->SetDefaultValue(GetDefault<ULyraSettingsShared>()->GetMouseSensitivityY());
+			Setting->SetDefaultValue(GetDefault<USightTourSettingsShared>()->GetMouseSensitivityY());
 			Setting->SetDisplayFormat(UGameSettingValueScalarDynamic::RawTwoDecimals);
 			Setting->SetSourceRangeAndStep(TRange<double>(0, 10), 0.01);
 			Setting->SetMinimumLimit(0.01);
@@ -89,7 +89,7 @@ UGameSettingCollection* USightTourGameSettingRegistry::InitializeMouseAndKeyboar
 
 			Setting->SetDynamicGetter(GET_SHARED_SETTINGS_FUNCTION_PATH(GetTargetingMultiplier));
 			Setting->SetDynamicSetter(GET_SHARED_SETTINGS_FUNCTION_PATH(SetTargetingMultiplier));
-			Setting->SetDefaultValue(GetDefault<ULyraSettingsShared>()->GetTargetingMultiplier());
+			Setting->SetDefaultValue(GetDefault<USightTourSettingsShared>()->GetTargetingMultiplier());
 			Setting->SetDisplayFormat(UGameSettingValueScalarDynamic::RawTwoDecimals);
 			Setting->SetSourceRangeAndStep(TRange<double>(0, 10), 0.01);
 			Setting->SetMinimumLimit(0.01);
@@ -107,7 +107,7 @@ UGameSettingCollection* USightTourGameSettingRegistry::InitializeMouseAndKeyboar
 
 			Setting->SetDynamicGetter(GET_SHARED_SETTINGS_FUNCTION_PATH(GetInvertVerticalAxis));
 			Setting->SetDynamicSetter(GET_SHARED_SETTINGS_FUNCTION_PATH(SetInvertVerticalAxis));
-			Setting->SetDefaultValue(GetDefault<ULyraSettingsShared>()->GetInvertVerticalAxis());
+			Setting->SetDefaultValue(GetDefault<USightTourSettingsShared>()->GetInvertVerticalAxis());
 
 			Setting->AddEditCondition(WhenPlatformSupportsMouseAndKeyboard);
 
@@ -122,7 +122,7 @@ UGameSettingCollection* USightTourGameSettingRegistry::InitializeMouseAndKeyboar
 
 			Setting->SetDynamicGetter(GET_SHARED_SETTINGS_FUNCTION_PATH(GetInvertHorizontalAxis));
 			Setting->SetDynamicSetter(GET_SHARED_SETTINGS_FUNCTION_PATH(SetInvertHorizontalAxis));
-			Setting->SetDefaultValue(GetDefault<ULyraSettingsShared>()->GetInvertHorizontalAxis());
+			Setting->SetDefaultValue(GetDefault<USightTourSettingsShared>()->GetInvertHorizontalAxis());
 
 			Setting->AddEditCondition(WhenPlatformSupportsMouseAndKeyboard);
 

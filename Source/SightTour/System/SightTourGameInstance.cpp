@@ -7,6 +7,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "SightTourLevelDefines.h"
 #include "Enemy/EnemyCharacter.h"
+#include "../Player/SightTourCharacter.h"
 
 UE_DEFINE_GAMEPLAY_TAG_STATIC(GameFinish, "UI.Layer.Game");
 
@@ -69,6 +70,37 @@ int32 USightTourGameInstance::AddLocalPlayer(ULocalPlayer* NewPlayer, FPlatformU
 
 	return ReturnVal;
 }
+
+void USightTourGameInstance::SetFusionVisionStrength(float InStrength)
+{
+	APawn* CurPawn = GetCurPawn();
+	if(!IsValid(CurPawn))
+		return;
+	ASightTourCharacter* Player = Cast<ASightTourCharacter>(CurPawn);
+	if(!IsValid(Player))
+		return;
+	UCameraComponent* Camera = Player->GetFirstPersonCameraComponent();
+	if(!IsValid(Camera))
+		return;
+	float Strength = FMath::Clamp(InStrength / 10.f, 0.f, 1.f);
+	Camera->SetPostProcessBlendWeight(Strength);
+}
+
+void USightTourGameInstance::EnableFusionVision(bool bEnable)
+{
+	APawn* CurPawn = GetCurPawn();
+	if (!IsValid(CurPawn))
+		return;
+	ASightTourCharacter* Player = Cast<ASightTourCharacter>(CurPawn);
+	if (!IsValid(Player))
+		return;
+	UCameraComponent* Camera = Player->GetFirstPersonCameraComponent();
+	if (!IsValid(Camera))
+		return;
+	float Strength = bEnable ? 1.f : 0.f;
+	Camera->SetPostProcessBlendWeight(Strength);
+}
+
 void USightTourGameInstance::FinishCurrentLevel()
 {
 	//TransitToNextLevel();

@@ -31,6 +31,12 @@ public:
 
 	int32 AddLocalPlayer(ULocalPlayer* NewPlayer, FPlatformUserId UserId) override;
 
+
+	//--------------------------- 游戏设置相关接口 --------------------------------
+	void SetFusionVisionStrength(float InStrength);
+
+	void EnableFusionVision(bool bEnable);
+
 	//---------------------------游戏流程相关  ----------------------------------
 public:
 	void FinishCurrentLevel();

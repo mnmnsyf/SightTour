@@ -16,21 +16,21 @@ class UObject;
 //--------------------------------------
 
 class UGameSettingCollection;
-class ULyraLocalPlayer;
+class ULocalPlayer;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogSightTourGameSettingRegistry, Log, Log);
 
-//#define GET_SHARED_SETTINGS_FUNCTION_PATH(FunctionOrPropertyName)							\
-//	MakeShared<FGameSettingDataSourceDynamic>(TArray<FString>({								\
-//		GET_FUNCTION_NAME_STRING_CHECKED(ULyraLocalPlayer, GetSharedSettings),				\
-//		GET_FUNCTION_NAME_STRING_CHECKED(ULyraSettingsShared, FunctionOrPropertyName)		\
-//	}))
-//
-//#define GET_LOCAL_SETTINGS_FUNCTION_PATH(FunctionOrPropertyName)							\
-//	MakeShared<FGameSettingDataSourceDynamic>(TArray<FString>({								\
-//		GET_FUNCTION_NAME_STRING_CHECKED(ULyraLocalPlayer, GetLocalSettings),				\
-//		GET_FUNCTION_NAME_STRING_CHECKED(ULyraSettingsLocal, FunctionOrPropertyName)		\
-//	}))
+#define GET_SHARED_SETTINGS_FUNCTION_PATH(FunctionOrPropertyName)							\
+	MakeShared<FGameSettingDataSourceDynamic>(TArray<FString>({								\
+		GET_FUNCTION_NAME_STRING_CHECKED(USightTourLocalPlayer, GetSharedSettings),				\
+		GET_FUNCTION_NAME_STRING_CHECKED(USightTourSettingsShared, FunctionOrPropertyName)		\
+	}))
+
+#define GET_LOCAL_SETTINGS_FUNCTION_PATH(FunctionOrPropertyName)							\
+	MakeShared<FGameSettingDataSourceDynamic>(TArray<FString>({								\
+		GET_FUNCTION_NAME_STRING_CHECKED(USightTourLocalPlayer, GetLocalSettings),				\
+		GET_FUNCTION_NAME_STRING_CHECKED(USightTourSettingsLocal, FunctionOrPropertyName)		\
+	}))
 
 /**
  * 
@@ -53,6 +53,11 @@ protected:
 
 	UGameSettingCollection* InitializeMouseAndKeyboardSettings(ULocalPlayer* InLocalPlayer);
 
+	UGameSettingCollection* InitializeFusionVisionSettings(ULocalPlayer* InLocalPlayer);
+
 	UPROPERTY()
 	TObjectPtr<UGameSettingCollection> MouseAndKeyboardSettings;
+
+	UPROPERTY()
+	TObjectPtr<UGameSettingCollection> FusionVisionSettings;
 };
