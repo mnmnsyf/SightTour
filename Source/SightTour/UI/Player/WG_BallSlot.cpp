@@ -7,7 +7,7 @@
 #include "Components/Image.h"
 #include "Engine/Texture2D.h"
 
-void UWG_BallSlot::SetBallContent(FString NewContent, UTexture2D* NewTexture)
+void UWG_BallSlot::SetBallContent(FString NewContent, UObject* NewTexture)
 {
 	if (T_BallContent)
 	{
@@ -17,8 +17,10 @@ void UWG_BallSlot::SetBallContent(FString NewContent, UTexture2D* NewTexture)
 	if (I_BallIcon && NewTexture)
 	{
 		I_BallIcon->SetVisibility(ESlateVisibility::Visible);
-		I_BallIcon->SetBrushFromTexture(NewTexture);
+		I_BallIcon->SetBrushResourceObject(NewTexture);
 	}
+
+	OnBallSlotChange();
 }
 
 void UWG_BallSlot::ClearBallContent()
@@ -31,6 +33,8 @@ void UWG_BallSlot::ClearBallContent()
 	{
 		I_BallIcon->SetVisibility(ESlateVisibility::Collapsed);
 	}
+
+	OnBallSlotChange();
 }
 
 void UWG_BallSlot::NativeConstruct()

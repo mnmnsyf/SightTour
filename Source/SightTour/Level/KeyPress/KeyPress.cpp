@@ -44,14 +44,14 @@ bool AKeyPress::InitConfig()
 	//IA Binding
 	if (UEnhancedInputComponent* EIComponent = Cast<UEnhancedInputComponent>(PC->InputComponent))
 	{
-		for (auto& EachConfig : KeyConfig)
+		for (auto& EachIA : InputActions)
 		{
-			if (EachConfig.IA.IsNull() || !IsValid(EachConfig.Image))
+			if (EachIA.IsNull())
 			{
 				continue;
 			}
 
-			UInputAction* IA = EachConfig.IA.LoadSynchronous();
+			UInputAction* IA = EachIA.LoadSynchronous();
 			check(IA);
 
 			auto& Binding = EIComponent->BindAction(IA, ETriggerEvent::Triggered, this, &AKeyPress::CheckAnswerKey);
@@ -88,18 +88,20 @@ bool AKeyPress::UpdateNextKey(float DeltaTime)
 		return false;
 	}
 
-	int32 RandomIndex = FMath::RandRange(0, KeyConfig.Num() - 1);
-	FKeyPressConfig& NewContent = KeyConfig[RandomIndex];
-	if (NewContent.IA.IsNull() || !IsValid(NewContent.Image))
+	int32 KeyIndex = FMath::RandRange(0, InputActions.Num() - 1);
+	int32 ImageIndex = FMath::RandRange(0, Images.Num() - 1);
+
+	if (InputActions[KeyIndex].IsNull() || !IsValid(Images[ImageIndex]))
 	{
+		ensure(false);
 		return false;
 	}
 
-	UInputAction* IA = NewContent.IA.LoadSynchronous();
+	UInputAction* IA = InputActions[KeyIndex].LoadSynchronous();
 	check(IA);
 	//update UI
 	GetKeyPressUI()->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
-	GetKeyPressUI()->SetContent(IA->ActionDescription, NewContent.Image);
+	GetKeyPressUI()->SetContent(IA->ActionDescription, Images[ImageIndex].Get());
 	
 	//Set Timer
 	GetWorldTimerManager().SetTimer(TimerHandle, this, &AKeyPress::WrongCallback, CheckTime, false);

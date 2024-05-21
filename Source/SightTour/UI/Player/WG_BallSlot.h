@@ -24,7 +24,14 @@ protected:
 	void NativeConstruct() override;
 
 public:
-	void SetBallContent(FString NewContent, class UTexture2D* NewTexture);
+	UFUNCTION()
+	void SetBallContent(FString NewContent, UObject* NewTexture);
 
 	void ClearBallContent();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnBallSlotChange();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnSelect(bool bSelected);
 };

@@ -25,5 +25,5 @@ public:
 	void NativeConstruct() override;
 
 	UFUNCTION()
-	void SetContent(FText NewKeyName, class UTexture2D* NewImage);
+	void SetContent(FText NewKeyName, UMaterialInstance* NewImage);
 };

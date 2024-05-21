@@ -106,3 +106,19 @@ private:
 	UPROPERTY(EditAnywhere)
 	FString Value;
 };
+
+USTRUCT(BlueprintType)
+struct SIGHTTOUR_API FItemIconConfig
+{
+	GENERATED_BODY()
+
+	/**
+	 * The image to render for this brush, can be a UTexture or UMaterialInterface or an object implementing 
+	 * the AtlasedTextureInterface. 
+	 */
+	 UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player | Ball", meta = (AllowPrivateAccess = "true"))
+	 FName Type;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Brush, meta=( AllowPrivateAccess="true", DisplayThumbnail="true", DisplayName="Image", AllowedClasses="/Script/Engine.Texture,/Script/Engine.MaterialInterface,/Script/Engine.SlateTextureAtlasInterface", DisallowedClasses = "/Script/MediaAssets.MediaTexture"))
+	TObjectPtr<UObject> Icon;
+};

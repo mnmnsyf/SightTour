@@ -4,11 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "CommonActivatableWidget.h"
+#include "../Pickup/PickupItemDefines.h"
 #include "WG_InventoryBar.generated.h"
 
-/**
- * 
- */
+
+
+
 UCLASS()
 class SIGHTTOUR_API UWG_InventoryBar : public UCommonActivatableWidget
 {
@@ -24,14 +25,14 @@ protected:
 	UFUNCTION()
 	void OnBallPickup(bool bPickup, int32 InSlotIndex, FString BallContent, FName BallType);
 
-	UFUNCTION(BlueprintImplementableEvent)
-	void BP_OnBallSlotChange(int32 LastIndex, int32 NextIndex);
+	UFUNCTION()
+	void OnBallSlotChange(int32 LastIndex, int32 NextIndex);
 
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player | HealthBar", meta = (AllowPrivateAccess = "true", AllowAbstract))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "InventoryBar", meta = (AllowPrivateAccess = "true", AllowAbstract))
 	TSoftClassPtr<class UWG_BallSlot> BallSlotClass;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player | Ball", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "InventoryBar", meta = (AllowPrivateAccess = "true"))
 	TMap<FName, class UTexture2D*> BallTypeIconMap;
 
 private:

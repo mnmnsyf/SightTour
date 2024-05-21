@@ -4,13 +4,14 @@
 #include "Components/TextBlock.h"
 #include "Components/Image.h"
 #include "Engine/Texture2D.h"
+#include "Materials/MaterialInstance.h"
 
 void UWG_KeyPress::NativeConstruct()
 {
 	Super::NativeConstruct();
 }
 
-void UWG_KeyPress::SetContent(FText NewKeyName, UTexture2D* NewImage)
+void UWG_KeyPress::SetContent(FText NewKeyName, UMaterialInstance* NewImage)
 {
 	if (T_KeyName)
 	{
@@ -18,7 +19,7 @@ void UWG_KeyPress::SetContent(FText NewKeyName, UTexture2D* NewImage)
 	}
 	if (I_Image) 
 	{
-		I_Image->SetBrushFromTexture(NewImage);
+		I_Image->SetBrushFromMaterial(NewImage);
 	}
 
 }

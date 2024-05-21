@@ -52,8 +52,11 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = KeyPress, meta = (DisplayName = "ReduceHP"))
 	int32 ReduceHP = 3;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = KeyPress, meta = (DisplayName = "KeyConfig"))
-	TArray<FKeyPressConfig> KeyConfig;
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = KeyPress, meta = (DisplayName = "KeyPressUI"))
+	TArray<TSoftObjectPtr<class UInputAction>> InputActions;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = KeyPress, meta = (DisplayName = "KeyPressUI"))
+	TArray<TObjectPtr<UMaterialInstance>> Images;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "KeyPress", meta = (AllowPrivateAccess = "true"))
 	class UInputMappingContext* MappingContext;

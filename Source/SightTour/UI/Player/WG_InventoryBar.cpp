@@ -16,7 +16,7 @@ void UWG_InventoryBar::NativeConstruct()
 	UEquipmentManagerComponent* EquipmentManager = UEquipmentManagerComponent::Get(GetOwningPlayerPawn());
 	if (EquipmentManager)
 	{
-		EquipmentManager->ChangeSlotDelegate.AddDynamic(this, &UWG_InventoryBar::BP_OnBallSlotChange);
+		EquipmentManager->ChangeSlotDelegate.AddDynamic(this, &UWG_InventoryBar::OnBallSlotChange);
 		EquipmentManager->PickupBallDelegate.AddDynamic(this, &UWG_InventoryBar::OnBallPickup);
 	}
 
@@ -30,6 +30,11 @@ void UWG_InventoryBar::NativeConstruct()
 			InventorySlot.Emplace(BallSlot);
 			HB_InventoryBox->AddChildToHorizontalBox(BallSlot);
 		}
+	}
+
+	if (InventorySlot.Num() > 0)
+	{
+		InventorySlot[0]->OnSelect(true);
 	}
 }
 
@@ -45,6 +50,14 @@ void UWG_InventoryBar::OnBallPickup(bool bPickup, int32 InSlotIndex, FString Bal
 	{
 		ensure(false);
 	}
+}
+
+void UWG_InventoryBar::OnBallSlotChange(int32 LastIndex, int32 NextIndex)
+{
+	check(InventorySlot.IsValidIndex(LastIndex));
+	InventorySlot[LastIndex]->OnSelect(false);
+	check(InventorySlot.IsValidIndex(NextIndex));
+	InventorySlot[NextIndex]->OnSelect(true);
 }
 
 UWG_BallSlot* UWG_InventoryBar::LoadBallSlot()
