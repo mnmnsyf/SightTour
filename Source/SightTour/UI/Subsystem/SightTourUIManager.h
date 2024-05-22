@@ -50,6 +50,9 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintCosmetic, Category = "Global UI Extensions")
 	UCommonActivatableWidget* PushContentToLayer_ForPlayer(ULocalPlayer* LocalPlayer, UPARAM(meta = (Categories = "UI.Layer")) FGameplayTag LayerName, UPARAM(meta = (AllowAbstract = false)) TSubclassOf<UCommonActivatableWidget> WidgetClass);
 
+	UFUNCTION(BlueprintCallable, BlueprintCosmetic, Category = "Global UI Extensions")
+	void FindAndRemoveWidgetFromLayer(UCommonActivatableWidget* ActivatableWidget);
+
 protected:
 	void CreatePrimaryLayout(ULocalPlayer* LocalPlayer);
 

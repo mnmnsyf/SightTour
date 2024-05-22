@@ -52,6 +52,14 @@ UCommonActivatableWidget* USightTourUIManager::PushContentToLayer_ForPlayer(ULoc
 	return PrimaryLayout->PushWidgetToLayerStack(LayerName, WidgetClass);
 }
 
+void USightTourUIManager::FindAndRemoveWidgetFromLayer(UCommonActivatableWidget* ActivatableWidget)
+{
+	if (PrimaryLayout)
+	{
+		PrimaryLayout->FindAndRemoveWidgetFromLayer(ActivatableWidget);
+	}
+}
+
 void USightTourUIManager::CreatePrimaryLayout(ULocalPlayer* LocalPlayer)
 {
 	if (APlayerController* PlayerController = LocalPlayer->GetPlayerController(GetWorld()))

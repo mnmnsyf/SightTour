@@ -31,6 +31,10 @@ public:
 public:
 	UFUNCTION(BlueprintCallable)
 	FORCEINLINE void SetStartPlay(bool bStart) { bStartPlay = bStart; }
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE bool GetStartPlay() { return bStartPlay; }
+
+	void SetUIHidden(bool bHide);
 
 	bool InitConfig();
 
@@ -75,4 +79,7 @@ private:
 	//---------------------- 当前所需数据 -----------------------------------
 	uint32 IABindHandle = -1;
 	FTimerHandle TimerHandle;
+
+
+	bool bHiddenUI = false;
 };

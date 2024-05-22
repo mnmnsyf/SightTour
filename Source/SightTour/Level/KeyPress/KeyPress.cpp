@@ -12,7 +12,7 @@
 #include "InputAction.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
-#include "../Player/SightTourCharacter.h"
+#include "Player/SightTourCharacter.h"
 
 AKeyPress::AKeyPress()
 {
@@ -31,6 +31,16 @@ void AKeyPress::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	UpdateNextKey(DeltaTime);
+}
+
+void AKeyPress::SetUIHidden(bool bHide)
+{
+	bHiddenUI = bHide;
+	if (KeyPressUI)
+	{
+		ESlateVisibility Vis = bHiddenUI ? ESlateVisibility::Hidden : ESlateVisibility::Visible;
+		KeyPressUI->SetVisibility(Vis);
+	}
 }
 
 bool AKeyPress::InitConfig()
@@ -70,7 +80,7 @@ bool AKeyPress::InitConfig()
 
 bool AKeyPress::UpdateNextKey(float DeltaTime)
 {
-	if (!bStartPlay)
+	if (!bStartPlay || bHiddenUI)
 	{
 		return false;
 	}

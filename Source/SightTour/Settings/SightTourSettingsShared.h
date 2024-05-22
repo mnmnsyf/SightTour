@@ -61,7 +61,7 @@ private:
 	UPROPERTY()
 	float FusionVisionStrength = 10.f;
 	UPROPERTY()
-	bool bEnableFusionVision = false;
+	bool bEnableFusionVision = true;
 
 
 
