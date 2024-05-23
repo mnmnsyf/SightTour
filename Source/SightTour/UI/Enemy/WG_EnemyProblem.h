@@ -32,10 +32,20 @@ public:
 public:
 	void UpdateProblemContext(TArray<FString> Context);
 
+	//对象池处理数据Item的条数。创建或者隐藏，少了就创建，多了就隐藏。 bSetVisible：是否自动将合适的Item设置visible，不然外部自己控制
+	static void ControlItemCount(TArray<UCommonUserWidget*> CurAllItem, int32 NewNum, TFunction<void()> CreateOneItem, bool bSetVisible = true);
+
 private:
-	UWG_ProblemText* LoadProblemText();
+	UWG_ProblemText* LoadOneProblemText();
+	void ResetContainerData();
+
+	void NativeConstruct() override;
+	void NativeDestruct() override;
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "Problem", AllowAbstract))
 	TSoftClassPtr<class UWG_ProblemText> ProblemTextClass;
+
+	UPROPERTY()
+	TArray<class UWG_ProblemText*> ProblemTextPool;
 };
