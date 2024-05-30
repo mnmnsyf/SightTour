@@ -45,4 +45,8 @@ void UWG_BallSlot::NativeConstruct()
 	{
 		I_BallIcon->SetVisibility(ESlateVisibility::Collapsed);
 	}
+	if (T_BallContent)
+	{
+		T_BallContent->SetText(FText());
+	}
 }

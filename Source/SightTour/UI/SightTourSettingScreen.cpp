@@ -66,14 +66,14 @@ void USightTourSettingScreen::NativeOnActivated()
 		GetOwningPlayer()->SetInputMode(InputModeUIOnly);
 		GetOwningPlayer()->SetShowMouseCursor(true);
 	}*/
-	TArray<AActor*> QTEs;
+	/*TArray<AActor*> QTEs;
 	UGameplayStatics::GetAllActorsOfClass(this, AKeyPress::StaticClass(), QTEs);
 	for (auto& EachQTE : QTEs)
 	{
 		if (AKeyPress* QTE = Cast<AKeyPress>(EachQTE)) {
 			QTE->SetUIHidden(true);
 		}
-	}
+	}*/
 }
 
 void USightTourSettingScreen::NativeOnDeactivated()
@@ -87,14 +87,14 @@ void USightTourSettingScreen::NativeOnDeactivated()
 		GetOwningPlayer()->SetInputMode(InputModeGameOnly);
 		GetOwningPlayer()->SetShowMouseCursor(false);
 	}*/
-	TArray<AActor*> QTEs;
+	/*TArray<AActor*> QTEs;
 	UGameplayStatics::GetAllActorsOfClass(this, AKeyPress::StaticClass(), QTEs);
 	for (auto& EachQTE : QTEs)
 	{
 		if (AKeyPress* QTE = Cast<AKeyPress>(EachQTE)) {
 			QTE->SetUIHidden(false);
 		}
-	}
+	}*/
 }
 
 void USightTourSettingScreen::OnSettingsDirtyStateChanged_Implementation(bool bSettingsDirty)
