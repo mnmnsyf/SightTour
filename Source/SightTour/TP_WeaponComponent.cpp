@@ -84,7 +84,8 @@ void UTP_WeaponComponent::Fire()
 
 void UTP_WeaponComponent::Attract()
 {
-	check(OwnerCharacter);
+	if (!IsValid(OwnerCharacter))
+		return;
 
 	if (bAttractProjectile)
 	{
@@ -134,14 +135,20 @@ ASightTourCharacter* UTP_WeaponComponent::GetOwnerCharacter()
 
 APlayerController* UTP_WeaponComponent::GetPlayerController()
 {
-	check(OwnerCharacter);
-
-	return OwnerCharacter->GetPlayerController();
+	if (IsValid(OwnerCharacter))
+	{
+		return OwnerCharacter->GetPlayerController();
+	}
+	else
+	{
+		return nullptr;
+	}
 }
 
 void UTP_WeaponComponent::AttachWeapon(ASightTourCharacter* TargetCharacter)
 {
-	check(TargetCharacter);
+	if(!IsValid(TargetCharacter))
+	return;
 
 	OwnerCharacter = TargetCharacter;
 
