@@ -60,12 +60,12 @@ void USightTourSettingScreen::NativeOnActivated()
 	Super::NativeOnActivated();
 
 	//临时
-	if (GetOwningPlayer())
+	/*if (GetOwningPlayer())
 	{
 		FInputModeUIOnly InputModeUIOnly;
 		GetOwningPlayer()->SetInputMode(InputModeUIOnly);
 		GetOwningPlayer()->SetShowMouseCursor(true);
-	}
+	}*/
 	TArray<AActor*> QTEs;
 	UGameplayStatics::GetAllActorsOfClass(this, AKeyPress::StaticClass(), QTEs);
 	for (auto& EachQTE : QTEs)
@@ -81,12 +81,12 @@ void USightTourSettingScreen::NativeOnDeactivated()
 	Super::NativeOnDeactivated();
 
 	//临时
-	if (GetOwningPlayer())
+	/*if (GetOwningPlayer())
 	{
 		FInputModeGameOnly InputModeGameOnly;
 		GetOwningPlayer()->SetInputMode(InputModeGameOnly);
 		GetOwningPlayer()->SetShowMouseCursor(false);
-	}
+	}*/
 	TArray<AActor*> QTEs;
 	UGameplayStatics::GetAllActorsOfClass(this, AKeyPress::StaticClass(), QTEs);
 	for (auto& EachQTE : QTEs)
