@@ -18,7 +18,7 @@ void UWG_EnemyProblem::UpdateProblemContext(TArray<FString> Context)
 	}
 
 	// 控制对象池
-	ControlItemCount(static_cast<TArray<UCommonUserWidget*>>(ProblemTextPool), Context.Num(), [this]() { LoadOneProblemText(); }, true);
+	ControlItemCount(static_cast<TArray<UCommonUserWidget*>>(ProblemTextPool), Context.Num(), [this]() { LoadOneProblemText(); }, false);
 	for (int32 i = 0; i < Context.Num(); i++)
 	{
 		UWG_ProblemText* ProblemText = ProblemTextPool[i];
