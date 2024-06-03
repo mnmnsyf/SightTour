@@ -160,6 +160,9 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player | Health", meta = (AllowPrivateAccess = "true"))
 	float DefaultHealth = 100.f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player | Camer", meta = (AllowPrivateAccess = "true"))
+	float CameraMoveRatio = 0.5;
+
 
 private:
 	/** 玩家HUD */

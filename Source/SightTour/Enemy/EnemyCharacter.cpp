@@ -76,10 +76,10 @@ UAnimMontage* AEnemyCharacter::PlayAnimAsMontage(UAnimSequence* Anim, const floa
 
 FName AEnemyCharacter::GetRandomAttackSectionName()
 {
-	if (ensure(!AttackAnim->IsValidAdditive()))
+	/*if (ensure(!AttackAnim->IsValidAdditive()))
 	{
 		return NAME_None;
-	}
+	}*/
 
 	const int32 SectionNum = AttackAnim->CompositeSections.Num();
 	const int32 RandomSectioIndex = FMath::RandRange(0, SectionNum - 1);

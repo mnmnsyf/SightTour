@@ -154,8 +154,8 @@ void ASightTourCharacter::Look(const FInputActionValue& Value)
 	//旋转镜头
 	if (Controller != nullptr)
 	{
-		AddControllerYawInput(LookAxisVector.X);
-		AddControllerPitchInput(LookAxisVector.Y);
+		AddControllerYawInput(LookAxisVector.X * CameraMoveRatio);
+		AddControllerPitchInput(LookAxisVector.Y * CameraMoveRatio);
 	}
 
 	//更新视线内物品信息
